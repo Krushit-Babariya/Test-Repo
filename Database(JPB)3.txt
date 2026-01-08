@@ -1,0 +1,284 @@
+CLAUSES IN DATABASE:
+=====================
+	- it is a statement which is used to add to sql query to providing some
+additional facilities are "Filtering rows,Sorting values,Grouping data,
+Finding sub total and grand total" based on column/columns in a table automatically.
+
+Types of clauses:
+===============
+	i) Where
+	ii) Order by
+	iii) Group by
+	iv) Having
+	v) Rollup
+	vi) Cube
+
+syntax:
+======
+	<SQL QUERY> + <CLAUSE STATEMENT>;
+
+
+i) Where :
+==========
+	- is used for filtering rows before grouping data in a table.
+	- where clause condition is working on each individual row in a table.
+	- it can apply on "select,update,delete" commands only.
+syntax:
+======
+	where <filtering condition>;
+
+Ex:
+SQL> SELECT * FORM EMP WHERE EMPNO=7788;
+SQL> UPDATE EMP SET SAL=55000 WHERE JOB='PRESIDENT';
+SQL> DELETE FROM EMP WHERE SAL=23000;
+
+ii) Order by:
+==========
+	- is used to arrange a particular column values in ascending / descending
+order.by default order by clause is arranging values in "ascending order" only.if
+we want to arrange values in descending order then use a keyword is called as 
+"DESC".
+	- it can apply on "select command" only.
+
+syntax:
+=======
+select * / <list of columns> from <table name> order by <column name1> <asc/desc>,
+<column name2> <asc> / <desc>,.............................;
+
+Ex:
+SQL> SELECT * FROM EMP ORDER BY SAL;
+SQL> SELECT * FROM EMP ORDER BY SAL DESC;
+
+SQL> SELECT * FROM EMP ORDER BY ENAME;
+SQL> SELECT * FROM EMP ORDER BY ENAME DESC;
+
+SQL> SELECT * FROM EMP ORDER BY HIREDATE;
+SQL> SELECT * FROM EMP ORDER BY HIREDATE DESC;
+
+Ex:
+waq to arrange employees salaries in descending order who are working as a
+"salesman"?
+SQL> SELECT * FROM EMP WHERE JOB='SALESMAN' ORDER BY SAL DESC;
+
+Ex:
+waq to arrange employees salaries in descending order and  their deptno's are 
+ascending for each deptno wise?
+SQL> SELECT * FROM EMP ORDER BY DEPTNO,SAL DESC;
+
+Note:
+=====
+	- order by clause can apply on not only column names even though we
+can apply on position of column in SELECT query.
+
+Ex:
+SQL> SELECT * FROM EMP ORDER BY SAL DESC;
+		(OR)
+SQL> SELECT * FROM EMP ORDER BY 6 DESC;
+
+SQL> SELECT EMPNO,ENAME,SAL FROM EMP ORDER BY 3 DESC;
+SQL> SELECT ENAME,SAL FROM EMP ORDER BY 2 DESC;
+SQL> SELECT SAL FROM EMP ORDER BY 1 DESC;
+
+GROUP BY:
+==========
+	- this clause is used for grouping a specific column / columns data.
+	- when we use "group by" clause we should use an aggregative / grouping
+functions are Count(),Sum(),Avg(),Min() and Max().
+	- it can apply on "select command" only.
+
+syntax:
+=======
+select <column name1>,<column name2>,.......,<aggregative function name1>,.......
+from <table name> group by(<column name1>,<column name2>,........);
+
+Ex:
+DEMO_TABLE:
+============
+SQL> SELECT * FROM STUDENTS;
+
+      STID SNAME      GENDER
+----------    ---------- 	----------
+         1 SMITH      	FEMALE
+         2 MILLER     	MALE
+         3 SCOTT      	MALE
+         4 ALLEN      	FEMALE
+         5 JONES      	FEMALE
+
+EX:
+waq to find out the total students in a class room?
+SQL> SELECT COUNT(*) FROM STUDENTS;
+
+  COUNT(*)
+----------
+         5
+
+EX:
+waq to find out the no. of male students in a class room?
+SQL> SELECT COUNT(*) FROM STUDENTS WHERE GENDER='MALE';
+
+  COUNT(*)
+----------
+         2
+
+Ex:
+waq to findout no.of students in each gender wise?
+SQL> SELECT GENDER,COUNT(*) AS NO_OF_STUDENTS
+  2  FROM STUDENTS GROUP BY GENDER;
+
+GENDER     NO_OF_STUDENTS
+---------- 	---------------------------------
+MALE                    2
+FEMALE                3
+
+Ex:
+waq to display no.of employees working in each job ?
+SQL> SELECT JOB,COUNT(*) AS NO_OF_EMPLOYEES FROM EMP GROUP BY JOB;
+
+EX:
+waq to display no.of employees working in each job along with their deptno wise?
+SQL> SELECT JOB,DEPTNO,COUNT(*) FROM EMP 
+GROUP BY JOB,DEPTNO 
+ORDER BY JOB,DEPTNO;
+
+JOB           DEPTNO   	COUNT(*)
+--------- 	--------------- 	---------
+CLERK             10          	1
+CLERK             20          	2
+CLERK             30          	1
+...........	 ..............		......
+
+Ex:
+waq to display sum of salaries of each deptno wise?
+SQL> SELECT DEPTNO,SUM(SAL) FROM EMP GROUP BY DEPTNO ORDER  BY DEPTNO;
+
+Ex:
+waq to display,
+	- no.of employees
+	- sum of salaries
+	- average of salary
+	- maximum salary
+	- minimum salary 
+of each deptno wise?
+
+SOL:
+SQL> SELECT DEPTNO,
+    COUNT(*)AS NO_OF_EMPLOYEES,
+    SUM(SAL)AS TOTAL_SALARY,
+    AVG(SAL)AS AVG_SALARY,
+    MAX(SAL)AS MAX_SALARY,
+    MIN(SAL)AS MIN_SALARY
+    FROM EMP GROUP BY DEPTNO ORDER BY DEPTNO;
+
+HAVING:
+========
+	- it is used for filtering rows after grouping data in a table.
+	- having clause can be implemented along with "group by" clause.
+	- it can apply on "select command" only.
+
+syntax:
+=======
+select <column name1>,<column name2>,.......,<aggregative function name1>,.......
+from <table name> group by <column name1>,<column name2>,........................
+having <filtering condition>;
+
+Ex:
+waq to display jobs from emp table in which job the no.of employees are more than
+3?
+SQL> SELECT JOB,COUNT(*) FROM EMP GROUP BY JOB
+  2  HAVING COUNT(*)>3;
+
+JOB         		COUNT(*)
+--------- 		----------
+CLERK              	4
+SALESMAN           	4
+
+EX:
+waq to display deptno's from emp table in which deptno the sum of salary is 
+less than 10000?
+SQL> SELECT DEPTNO,SUM(SAL) FROM EMP GROUP BY DEPTNO
+  2  HAVING SUM(SAL)<10000 ORDER BY DEPTNO;
+
+    DEPTNO   	SUM(SAL)
+---------- 		----------
+        10       	8750
+        30       	9400
+
+USING ALL CLAUSES IN A SINGLE SELECT STATEMENT:
+=================================================
+SYNTAX:
+========
+select <column name1>,<column name2>,.......,<aggregative function name1>,.....
+from <table name> [ where <filtering condition>
+		 group by <column name1>,.........
+		 having <filtering condition>
+		 order by <column name1> <asc/desc>,......
+		];
+
+
+Ex:
+SQL> SELECT DEPTNO,COUNT(*) FROM EMP
+  2     WHERE SAL>1000
+  3     GROUP BY DEPTNO
+  4     HAVING COUNT(*)>3
+  5     ORDER BY DEPTNO;
+
+    DEPTNO   	COUNT(*)
+---------------- 	----------
+        20          	4
+        30          	5
+
+ROLLUP & CUBE:
+==============
+	- these are special clauses in database.
+	- which will use to find sub total and grand total based on column/columns.
+	- mostly these clauses are used in "datawarehouse" for data summerizing / 
+describing" purpose.
+
+Here,
+	Rollup : is used to find sub & grand total based on a single column.
+	Cube   : is used to find sub & grand total basd on multiple columns.
+	
+	NOTE : these clauses are used along with "group by" clause only.
+
+syntax for ROLLUP:
+================
+select <column name1>,<column name2>,.......,<aggregative function name1>,.....
+from <table name> group by rollup(<column name1>,<column name2>,.........);
+			        .........................    ..................................
+				|		 |
+			operational column		supporting columns
+
+Ex on rollup with a single column:
+=============================
+SQL> SELECT DEPTNO,COUNT(*) FROM EMP GROUP BY ROLLUP(DEPTNO);
+
+Ex on rollup with multiple columns:
+=============================
+SQL> SELECT DEPTNO,JOB,COUNT(*) FROM EMP GROUP BY ROLLUP(DEPTNO,JOB);
+	Here,
+		leading column is "DEPTNO".
+
+SQL> SELECT JOB,DEPTNO,COUNT(*) FROM EMP GROUP BY ROLLUP(JOB,DEPTNO);
+
+	Here,
+		leading column is "JOB".
+
+
+syntax for CUBE:
+================
+select <column name1>,<column name2>,.......,<aggregative function name1>,.....
+from <table name> group by cube(<column name1>,<column name2>,.........);
+			        ...........................................................
+					|		 
+			        all columns are operational columns		
+
+
+Ex on cube with a single column:
+============================
+SQL> SELECT DEPTNO,COUNT(*) FROM EMP GROUP BY CUBE(DEPTNO) 
+ORDER BY DEPTNO;
+
+Ex on cube with multiple columns:
+=============================
+SQL> SELECT JOB,DEPTNO,COUNT(*) FROM EMP
+         GROUP BY CUBE(JOB,DEPTNO) ORDER BY JOB,DEPTNO;

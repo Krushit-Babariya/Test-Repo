@@ -1,0 +1,343 @@
+FUNCTIONS IN DATABASE:
+=======================
+- a function is a block code to perform some task and it must return a
+value.DB's are supporting the following two types of functions,
+		1.Pre-defined Functions
+			- Use in SQL and PL/SQL (or) T/SQL
+		2.User-defined Functions
+			- Use in PL/SQL (or) T/SQL
+	
+1.Pre-defined Functions:
+=====================
+	- these functions are also called as "Built-In functions" in database.
+		> Number Functions
+		> String / Character Functions
+		> Analytical / Ranking Functions
+		> Grouping / Aggregative Functions
+
+How to call a function in oracle db:
+=============================
+syntax:
+=======
+select <fname>(value /(s)) from dual ;--------------> [ dual is a pre-defined table].
+
+How to call a function in sqlserver db:
+================================
+syntax:
+=======
+select <fname>(value /(s)) ;	
+
+Number Functions:
+================
+ABS():
+=====
+	- to convert (-ve) sign values into (+ve) sign values.
+Ex:
+SQL> SELECT ABS(-12) FROM DUAL;----ORACLE
+SQL> SELECT ABS(-12);-----SQLSERVER
+
+Ex:
+waq to display EMPNO,ENAME,SAL,COMM and COMM-SAL from emp table?
+SQL> SELECT EMPNO,ENAME,SAL,COMM,ABS(COMM-SAL) AS RESULT FROM EMP;
+
+FLOOR():
+========
+	- it return a value which is less than or is equals to the given expression.
+
+Ex:
+SQL> SELECT FLOOR(9.8) FROM DUAL;-------> 9
+SQL> SELECT FLOOR(9.0) FROM DUAL;-------> 9
+
+SQL> SELECT FLOOR(9.8);-----> 9
+SQL> SELECT FLOOR(9.0);------> 9
+
+POWER():
+========
+	- it returns the power of given expression.
+
+Ex:
+SQL> SELECT POWER(2,3) FROM DUAL;-----> 8
+
+SQL> SELECT POWER(2,3);-----> 8
+
+MOD():
+=====
+	- it returns the remainder value of given expression.
+
+Ex:
+SQL> SELECT MOD(10,2) FROM DUAL;------>0
+SQL> SELECT MOD(10,2);------>0
+
+Ex:
+waq to display employees details whose EMPNO is even number?
+SQL> SELECT * FROM EMP WHERE MOD(EMPNO,2)=0;
+
+SQRT():
+======
+	- it return the root value of an expression.
+Ex:
+SQL> SELECT SQRT(36) FROM DUAL;-------> 6
+SQL> SELECT SQRT(36);---->6
+
+CHARACTER / STRING FUNCTIONS:
+==============================
+LENGTH() / LEN():
+===============
+	- it returns the no.of characters in the given string expression.
+
+Ex:
+SQL> SELECT LENGTH('HELLO') FROM DUAL;---------------> 5
+SQL> SELECT LENGTH('WEL COME') FROM DUAL;--------> 8
+
+
+SQL> SELECT LEN('HELLO') ;---------------> 5
+SQL> SELECT LEN('WEL COME');---------> 8
+
+Ex:
+SQL> SELECT ENAME,LENGTH(ENAME) FROM EMP;
+SQL> SELECT * FROM EMP WHERE LENGTH(ENAME)>5;
+
+SQL> SELECT ENAME,LEN(ENAME) FROM EMP;
+SQL> SELECT * FROM EMP WHERE LEN(ENAME)>5;
+
+LOWER() & UPPER():
+=================
+	LOWER() : to convert upper case char's into lower case char's.
+	UPPER() : to convert lower case char's into upper case char's.
+
+EX:
+SQL> SELECT LOWER('HELLO') FROM DUAL;
+SQL> SELECT LOWER('HELLO');
+
+SQL> SELECT ENAME,LOWER(ENAME) FROM EMP;
+SQL> UPDATE EMP SET ENAME=LOWER(ENAME) WHERE JOB='CLERK';
+SQL> UPDATE EMP SET ENAME=LOWER(ENAME);
+SQL> UPDATE EMP SET ENAME=UPPER(ENAME);
+
+CONCAT():
+=========
+	- to add two string expressions.
+
+Ex:
+SQL> SELECT CONCAT('GOOD','MORNING') FROM DUAL;
+SQL> SELECT CONCAT('GOOD','MORNING');
+
+SQL> SELECT CONCAT('Mr.',ENAME) FROM EMP;
+
+REPLACE():
+==========
+	- to replace a string with a string (or) a character to string.
+
+Ex:
+SQL> SELECT REPLACE('HELLO','ELL','MNOP') FROM DUAL;
+SQL> SELECT REPLACE('JACK AND JUE','J','BL') FROM DUAL;
+
+SQL> SELECT REPLACE('HELLO','ELL','MNOP');
+SQL> SELECT REPLACE('JACK AND JUE','J','BL');
+
+TRANSLATE():
+============
+	- to translate a single character by character.
+
+Ex:
+SQL> SELECT TRANSLATE('HELLO','ELO','XYZ') FROM DUAL;
+	Here,
+		E = X , L = Y , O = Z.
+
+SUBSTRING() / SUBSTR():
+======================
+	- it returns the required sub string from the given string expression.
+
+syntax:
+======
+	substring / substr (string,<starting position character>,<length of the char's>)
+
+EX:
+SQL> SELECT SUBSTR('WELCOME',6,2) FROM DUAL;------ME
+SQL> SELECT SUBSTR('WELCOME',-5,2) FROM DUAL;-----LC
+
+SQL> SELECT SUBSTRING('WELCOME',6,2);------ME
+SQL> SELECT SUBSTRING('WELCOME',-5,2);-----LC
+
+ANALYTICAL / RANK FUNCTIONS:
+=============================
+RANK():
+=======
+	- to assign rank numbers to each row wise (or) to each group of rows
+wise in a table.
+	- rank() will skip the next sequence rank number in the order for 
+each repeated value.
+
+syntax:
+======
+rank()over([partition by] <column name> order by <column name> <asc / desc>)
+
+	Here, 
+		partiton by clause is a optional.
+		order by clause is a mandatory.
+
+Ex:
+SQL> SELECT EMPNO,ENAME,SAL,RANK()OVER(ORDER BY SAL DESC) 
+         AS RANKS FROM EMP;
+
+	- To overcome tha bove problem we should use "dense_rank()".
+it will not skip the next sequence rank number in the order for even each 
+repeated value.
+
+Ex:
+SQL> SELECT EMPNO,ENAME,SAL,DENSE_RANK()OVER(ORDER BY SAL DESC) 
+         AS RANKS FROM EMP;
+
+OUTPUT:
+========
+ENAME	SALARY	RANK()	DENSE_RANK()
+======================================
+A	85000	1	1
+B	72000	2	2
+C	72000	2	2
+D	68000	4	3
+E	53000	5	4
+F	49000	6	5
+G	49000	6	5
+H	32000	8	6
+
+BY USING "PARTITION BY" CLAUSE:
+===============================
+EX:
+SQL> SELECT ENAME,DEPTNO,SAL,RANK()OVER(PARTITION BY DEPTNO ORDER BY SAL DESC)
+         AS RANKS FROM EMP;
+
+SQL> SELECT ENAME,DEPTNO,SAL,DENSE_RANK()OVER(PARTITION BY DEPTNO ORDER BY SAL DESC)
+         AS RANKS FROM EMP;
+
+Grouping / Aggregative Functions:
+=============================
+	- these functions are working on group of data.
+	- SUM(),AVG(),MIN(),MAX(),COUNT().
+
+SUM():
+=====
+	- it return total value.
+
+Ex:
+SQL> SELECT SUM(SAL) FROM EMP;
+
+  SUM(SAL)
+----------
+     29025
+
+SQL> SELECT SUM(SAL) FROM EMP WHERE DEPTNO=10;
+
+  SUM(SAL)
+----------
+      8750
+
+AVG():
+======
+	- it return the average of total value.
+
+EX:
+SQL> SELECT AVG(SAL) FROM EMP;
+
+  AVG(SAL)
+----------
+2073.21429
+
+MIN():
+=====
+	- it return minimum value.
+
+Ex:
+SQL> SELECT MIN(HIREDATE) FROM EMP;
+
+MIN(HIRED
+---------
+17-DEC-80
+
+SQL> SELECT MIN(SAL) FROM EMP;
+
+  MIN(SAL)
+----------
+       800
+
+SQL> SELECT MIN(SAL) FROM EMP WHERE JOB='MANAGER';
+
+  MIN(SAL)
+----------
+      2450
+
+MAX():
+=====
+	- it return maximum value.
+
+Ex:
+SQL> SELECT MAX(SAL) FROM EMP;
+
+COUNT():
+========
+	i) count(*)
+	ii) count(<column name>)
+	iii) count(distinct <column name>)
+
+
+DEMO_TABLE:
+=============
+SQL> SELECT * FROM TEST;
+
+       SNO NAME
+---------- ----------
+       101 A
+       102 B
+       103
+       104 C
+       105 A
+       106 C
+
+COUNT(*):
+=========
+	- counting all rows including duplicates and nulls in a table.
+
+Ex:
+SQL> SELECT COUNT(*) FROM TEST;
+
+  COUNT(*)
+----------
+         6
+
+COUNT(<COLUMN NAME>):
+=======================
+	- counting all rows including duplicates but not nulls in a table.
+
+EX:
+SQL> SELECT COUNT(NAME) FROM TEST;
+
+COUNT(NAME)
+-----------
+          5
+
+COUNT(DISTINCT <COLUMN NAME>):
+================================
+	- counting unique values in a table(i.e no duplicates & no nulls)
+
+Ex:
+SQL> SELECT COUNT(DISTINCT NAME) FROM TEST;
+
+COUNT(DISTINCTNAME)
+-------------------
+                  3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

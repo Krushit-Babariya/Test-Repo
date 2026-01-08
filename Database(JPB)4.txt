@@ -1,0 +1,348 @@
+JOINS:
+======
+	- Generally in RDBMS data can be organized into multiple tables.if we 
+want to retrieve the required data from those multiple tables then we use a 
+techique is called as "JOINS".
+	- JOINS are used to retrieve / read the data / information from multiple
+tables at a time.
+
+Types of joins:
+=============
+	1. Inner join 
+		- equi join 
+		- non-equi join
+	2. Outer joins
+		- left outer join
+		- right outer join
+		- full outer join
+	3. Cross join 
+	4. Natural join
+	5. Self join
+
+Syntax:
+=======
+select * from <table name1> [table alias name1] <join key> <table name2> [table alias name2> on <joining condition>;
+
+1. Inner join :
+============
+	i) Equi join:
+	===========
+		- When we are retrieving data from multiple tables based on
+an " = " operator is called as "equi join".
+		- When we use equi join we have atleast one common column
+name (optional) in both tables and those columns datatypes must be same.
+		- having relationship between tables are optional.
+		- it always retrieve matching data(rows) only.
+
+syntax for equi join:
+=================
+	ON <tn1>.<common column name> = <tn2>.<common column name>;
+
+DEMO_TABLES:
+==============
+SQL> SELECT * FROM COURSE;
+
+       CID CNAME        CFEE
+---------- ---------- 	----------
+        10 DB               5000
+        20 JAVA           6000
+        30 .NET            8000
+        40 PYTHON      3500
+
+SQL> SELECT * FROM STUDENTS;
+
+      STID SNAME       CID
+---------- ---------- 	----------
+         1 SMITH             10
+         2 ALLEN             10
+         3 JONES             30
+         4 ADAMS            20
+         5 SCOTT
+Ex:
+waq to fetch students and their corresponding course details from students,course
+tables by using equi join / inner join ?
+SQL> SELECT * FROM STUDENTS JOIN COURSE
+         ON STUDENTS.CID=COURSE.CID;
+		(OR)
+SQL> SELECT * FROM STUDENTS S INNER JOIN COURSE C ON S.CID=C.CID;
+
+RULE OF JOINS:
+=============
+	 a row in a table is comparing with all rows in another table.
+		
+Ex:
+waq to display student names who are joined in "DB" course?
+SQL> SELECT SNAME FROM STUDENTS S INNER JOIN COURSE C
+  2  ON S.CID=C.CID WHERE CNAME='DB';
+		(OR)
+SQL> SELECT SNAME FROM STUDENTS S INNER JOIN COURSE C
+  2  ON S.CID=C.CID AND CNAME='DB';
+
+Ex:
+waq to display employees details who are working in the location is "CHICAGO"
+from EMP,DEPT tables by using inner join / equi join?		
+SQL> SELECT * FROM EMP E INNER JOIN DEPT D
+  2  ON E.DEPTNO=D.DEPTNO WHERE LOC='CHICAGO';
+
+Ex:
+waq to display sum of salaries of each department name wise by using inner / equi join?
+SQL> SELECT DNAME,SUM(SAL) FROM EMP E INNER JOIN DEPT D
+         ON E.DEPTNO=D.DEPTNO GROUP BY DNAME;
+
+Ex:
+waq to display departments from emp,dept tables if the sum of salary of a department 
+is more than 10000?
+SQL> SELECT DNAME,SUM(SAL) FROM EMP E INNER JOIN DEPT D
+         ON E.DEPTNO=D.DEPTNO GROUP BY DNAME HAVING SUM(SAL)>10000;
+
+2. Outer joins:
+============
+	- to retrieving matching and also unmatching rows(data) from multiple
+tables.this technique is again classified into three types,
+	i) left outer join
+	ii) right outer join
+	iii) full outer join
+
+i) left outer join:
+==============
+	- retrieving matching rows from both tables and unmatching rows from
+left side table only.
+SQL> SELECT * FROM STUDENTS S LEFT OUTER JOIN COURSE C ON S.CID=C.CID;
+
+ii) right outer join:
+================
+	- retrieving matching rows from both tables and unmatching rows from
+right side table only.
+SQL> SELECT * FROM STUDENTS S RIGHT OUTER JOIN COURSE C ON S.CID=C.CID;
+
+iii) full outer join:
+===============
+	- retrieving matching & unmatching rows from both tables.
+
+SQL> SELECT * FROM STUDENTS S FULL OUTER JOIN COURSE C ON S.CID=C.CID;
+
+NON-EQUI JOIN:
+==============
+	- retrieving data from multiple tables based on any operator except an
+"=" operator.
+	- in this join we can use the following operators are,
+		<,>,<=,>=,!=,between,and,or,.......etc
+
+DEMO_TABLES:
+==============
+SQL> SELECT * FROM TEST1;
+
+       SNO NAME
+---------- ----------
+        10 SMITH
+        20 ALLEN
+
+SQL> SELECT * FROM TEST2;
+
+       SNO        SAL
+----------         ----------
+        10      25000
+        30      32000
+
+Ex:
+SQL> SELECT * FROM TEST1 INNER JOIN TEST2 ON TEST1.SNO>TEST2.SNO;
+
+       SNO NAME              SNO        SAL
+----------    ----------              ----------    ----------
+        20 ALLEN              10          25000
+
+Ex:
+waq to display employees whose salary is between low salary and high salary?
+SQL> SELECT ENAME,SAL,LOSAL,HISAL FROM EMP INNER JOIN
+         SALGRADE ON SAL BETWEEN LOSAL AND HISAL;
+		(OR)
+SQL> SELECT ENAME,SAL,LOSAL,HISAL FROM EMP INNER JOIN
+         SALGRADE ON (SAL>=LOSAL) AND (SAL<=HISAL);
+
+CROSS JOIN:
+===========
+	- joining two or more than two tables without any condition.
+	- in this cross join each row of a table will joins with each row of another table 
+for example a table is having (m) no.of rows and another table is having (n) no.of rows then
+the result is (mxn) rows.
+	- this cross join is also called as "cartisean join".
+Ex:
+SQL> SELECT * FROM COURSE CROSS JOIN STUDENTS;
+		(OR)
+SQL> SELECT * FROM COURSE C CROSS JOIN STUDENTS S;
+
+DEMO_TABLES:
+=============
+SQL> SELECT * FROM ITEMS1;
+
+       SNO 	INAME           	PRICE
+---------- 	---------- 		----------
+         1 	BURGER             	85
+         2 	PIZZA             	150
+
+SQL> SELECT * FROM ITEMS2;
+
+       SNO 	INAME           	PRICE
+---------- 	---------- 		----------
+      1001 	PEPSI              	20
+      1002 	COCACOLA           	25
+
+EX:
+SQL> SELECT I1.INAME,I1.PRICE,I2.INAME,I2.PRICE,
+  2  I1.PRICE+I2.PRICE AS TOTAL_BILL_AMOUNT
+  3  FROM ITEMS1 I1 CROSS JOIN ITEMS2 I2;
+
+SELF JOIN:
+==========
+	- joining a table by itself is called as "self join".
+			(or)
+	- comparing data by itself is called as "self join".
+
+Note:
+=====
+1. self join technique is used  / implementing on a single table only.
+2. it can be implemented with help of alias names without alias names we cannot implement
+self join techinque.
+3. Once we create a alias name internally database server will prepare virtual tables on each
+alias name.
+4. we can create any no.of alias names on a single table but each alias name should be 
+different.
+
+	- there are two levels to implement self join mechanism,
+
+Level-1:
+======
+	- comparing a single column values by itself with in the table.
+
+Level-2:
+======
+	- comparing two different columns values to each other with in the table.
+
+DEMO_TABLE:
+=============
+SQL> SELECT * FROM TEST;
+
+ENAME      LOC
+---------- 	----------
+SMITH      HYD
+ALLEN      MUMBAI
+JONES      HYD
+ADAMS      KERALA
+MILLER     CHENNAI
+
+Ex on comparing a single column values by itself:
+===========================================
+Ex:
+waq to display employees who are working in the same location where the employee 
+"SMITH" is also working?
+
+solution:
+=======
+SQL> SELECT T1.ENAME,T1.LOC FROM TEST T1 JOIN TEST T2
+         ON T1.LOC=T2.LOC AND T2.ENAME='SMITH';
+
+ENAME      LOC
+---------- 	----------
+SMITH      HYD
+JONES      HYD
+
+Ex:
+waq to display employees whose salary is same as the employee "SCOTT" salary?
+SQL> SELECT E1.ENAME,E1.SAL FROM EMP E1 JOIN EMP E2
+  2  ON E1.SAL=E2.SAL AND E2.ENAME='SCOTT';
+
+ENAME             SAL
+---------- 	      ----------
+SCOTT            3000
+SMITH            3000
+
+Ex on comparing two different columns values to each other:
+====================================================
+Ex:
+waq to display managers and their employees from emp table?
+SQL> SELECT M.ENAME AS MANAGER,E.ENAME AS EMPLOYEES
+         FROM EMP E JOIN EMP M ON M.EMPNO=E.MGR;
+
+Ex:
+waq to display employees who are joined before their manager?
+SQL> SELECT M.ENAME AS MANAGER,M.HIREDATE AS MDOJ,E.ENAME AS EMPLOYEE,
+  2  E.HIREDATE AS EDOJ FROM EMP E JOIN EMP M
+  3  ON M.EMPNO=E.MGR AND E.HIREDATE<M.HIREDATE;
+
+EX:
+waq to display employees whose salary is more than their manager?
+SQL> SELECT M.ENAME AS MANAGER,M.SAL MSALARY,
+  2  E.ENAME AS EMPLOYEE,E.SAL ESALARY FROM EMP E
+  3  JOIN EMP M ON M.EMPNO=E.MGR AND E.SAL>M.SAL;
+
+Natural join:
+===========
+	- Natural join is similar to equi join.
+	- SQLSERVER is not support "Natural Join" whereas ORACLE is supporting
+	"Natural join".
+
+Equi join VS Natural join:
+=====================
+	
+	Equi join				Natural join
+	========				==========
+1. Equi join condition is 			1. Natural join condition is 
+prepared by user explicitly.			prepared by oracle db implicitly(automatically).
+
+2. Here,common colum name			2. Here,common column name
+is a optional.					is mandatory.
+
+3. retrieving data from multiple 		3. retrieving data from multiple
+tables including duplicate columns.		tables excluding duplicate columns.
+
+Similarities of equi & natural join:
+============================
+1. Both are retrieving data from multiple tables based on an " = " operator.
+2. Both are retrieving matching rows(data) only.
+
+HOW TO JOIN MORE THAN TWO TABLES:
+===================================
+SYNTAX:
+========
+SELECT * FROM <TABLE NAME1> <JOIN KEY> <TABLE NAME2>
+ON <JOIN CONDITION1> <JOIN KEY> <TABLE NAME3> 
+ON <JOIN CONDITION2> <JOIN KEY> <TABLE NAME4>
+ON <JOIN CONDITION3>...............................................
+......................................................................................
+.......................................................................................
+<JOIN KEY> <TABLE NAME n> ON <JOIN CONDITION n-1>;
+
+DEMO_TABLE:
+=============
+SELECT * FROM COURSE;
+SELECT * FROM STUDENT;
+SELECT * FROM REGISTER;
+
+     REGNO 	REGDATE          CID
+---------- 		--------- 	       ----------
+      1001 		10-JUL-23         10
+      1002 		11-JUL-23         20
+      1003 		10-JUL-23         50
+
+EQUI JOIN :
+===========
+Ex:
+SQL> SELECT * FROM STUDENTS S INNER JOIN COURSE C
+  2  ON S.CID=C.CID INNER JOIN REGISTER R
+  3  ON C.CID=R.CID;
+
+OUTER JOINS:
+============
+I) LOJ:
+======
+SQL> SELECT * FROM STUDENTS S LEFT OUTER JOIN COURSE C
+  2  ON S.CID=C.CID LEFT OUTER JOIN REGISTER R
+  3  ON C.CID=R.CID;
+
+LOGIC:
+======
+	LEFT	MID	RIGHT
+	=====	====	======
+CASE-1:	S	C	R
+CASE-2:	C	R	S
+CASE-3:	R	S	C

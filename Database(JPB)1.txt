@@ -1,0 +1,970 @@
+			   	DATABASE(16-06-2023)
+			   	=========
+
+What is Data ?
+============
+	- it is a rawfact ( i.e characters,numbers,special characters,symbols,....etc)
+	- data is never give meaningfull statements.
+	- Data refers to raw, unprocessed facts and figures. These can be anything from 	individual characters, numbers, special characters, symbols, or even observations and 	measurements. In their raw form, data are not organized, structured, or interpreted 	and, therefore, do not convey any meaningful information by themselves.
+
+        Conclusion:
+
+	- Data is the foundational building block for information, but in its raw state, it 	lacks the structure, organization, and context needed to be meaningful or informative. 	It’s only when data is processed or analyzed that it becomes information, which can 	then be used to make decisions, understand phenomena, or derive insights.
+
+Ex:
+	SMITH is data		10021 is data
+	ALLEN is data		10022 is data
+	WARNER is data		10023 is data
+	SCOTT is data		10024 is data
+
+
+What is Information?
+=================
+	- processing data is called as information.
+	- it always give meaningfull statements.
+
+Ex:
+	Employee_Names		Employee_ID
+	===============		============
+	SMITH 			10021 
+	ALLEN 			10022 
+	WARNER 			10023 
+	SCOTT 			10024
+
+What is Database ?
+================
+	- it is a collection of inter-related data/information of a particular organization.
+
+
+What is inter-related information:
+=============================
+	- dependency to each other.
+Ex:
+> SBI_ORG_DB
+	> group of branches -----------------------------> group of customers
+		> group of departments
+			> group of employees
+		
+Types of Databases ?
+==================
+	- there are two types of database in real world.
+		1. OLTP (Online transaction processing)
+		2. OLAP (Online analytical processing)
+
+1. OLTP:
+=======
+	- are used for storing "day-to-day" transactional infromation of 
+a running business(i.e 24x7)
+	S/W : oracle,sqlserver,mysql,db2,sybase,postgresql,.....etc
+
+2. OLAP:
+========
+	- are used for storing "historical data / information" (i.e Bigdata) of a particular organization.
+	S/W : datawarehouse.
+
+What is DBMS ?
+==============
+	- DBMS stands for "Database Management System".
+	- It is a software which is used to manage and maintain data / information with 
+in the database memory.
+	- by using of DBMS we can perform the following operations are,
+		> creating a database memory in DB server location.
+		> creating  tables
+		> inserting data
+		> updating data
+		> deleting data
+		> reading data
+ 
+Ex:
+===
+	User <-----------> DBMS s/w <---------------------> Database memory	
+		        (interface)	
+
+Models of DBMS ?
+================
+	- there are three models of DBMS.
+	
+	1) Hierarchical Database Management System(HDBMS)
+		Ex: IMS s/w (Information Management System)
+
+	2) Network Database Management System(NDBMS)
+		Ex: IDBMS s/w (Integrated Database Management System)
+
+Note:
+=====
+	- HDBMS,NDBMS model are outdated in real world.
+
+3) Relational Database Management System(RDBMS):
+=============================================
+	- it is a most popular database management system in real world.
+	- it again classified into two modules.those are
+
+i) Object Relational Database Management System(ORDBMS):
+====================================================
+	> data can be organized / stored in "table" format.
+		- a table : it collection of rows and columns
+			- a row / a record / a tuple
+			- a column / a attribute / a field
+		- a row : group of columns
+		- a database  : collection of tables.
+	> these databases are completely depends on "SQL" (structure query language).
+	so that these database are called as "SQL DB's".
+
+Ex: Oracle,SQLserver,MySQL,DB2,Sybase,Postgresql,MaxDB,......etc
+
+ii) Object Oriented Database Management System(OODBMS):
+===================================================
+	> data can be organized / stored in "objects" format.
+	> depends on "OOPS" languages (i.e Java,.Net,Python,...etc) but not "SQL" so that
+	these databases are called as "NoSQL" databases.
+
+Ex: MongoDB,Cassandra,......etc
+
+
+Working with Database tools:
+==========================
+	Software Tools :
+			For Java : Oracle DB software 
+			For .Net  : SQLserver software
+	Hardware Req :
+			Windows OS - 10 / 11
+			Microprocessor : any microprocessor(intel / intel core i3,i5,i10)
+			Hard Disk : 500gb (or) More
+			Ram	 : 2gb (or) More
+
+Note:
+=====
+	- Once we installed DB software ( oracle / sqlserver )  internally system will 
+installed two components.those are,
+		1. Client component
+		2. Server component
+
+1. Client component:
+==================
+	- it will perform the following operatios are,
+	step1 : Conneting to db server.(oracle / sqlserver).
+	step2 : Sending user request (query format) to db server. 
+	step3 : Getting Response from server to user.
+
+Ex: client tools are :
+		oracle s/w -----> SQLplus
+		sqlserver s/w ----> SSMS (sqlserver management studio)
+
+2. Server component:
+==================
+	- this component is having two more sub components,
+	
+i) Instance :
+==========
+	- it is a temporary memory allocating from RAM.
+	- it will store data temporarly.
+
+ii) Database :
+===========
+	- it is a permanent memory allocating from ROM(i.e harddisk)
+	- it will store data permanently.
+
+How to connecting to sqlserver:
+===========================
+> go to all programs 
+	> go to microsoft sqlserver management studio folder
+		> click on SSMS icon
+			> select servertype is "Database Engine"
+			> select servername is " . "
+			> select authentication name  : Windows authentication
+		> click on connect button.
+
+How to connecting to oracle:
+=========================
+> go to all programs 
+	> go to oracle_home folder
+		> click on SQLPLUS icon
+			> Enter username : system (default username)
+			> Enter password : tiger (at the time of oracle s/w installation)
+			connected.
+
+Note:
+=====
+	- Here, username is not a case sensitive but password is a case sensitive.
+=====================================================================================
+			    SQL
+			  ======
+	- SQL stands for "structure query language".which was introduced by
+"IBM" for communicating with database (i.e any relational databases like oracle,
+sqlserver,mysql,db2,.....etc).
+	- The initial name is "SEQUEL" and later renamed as "SQL".
+	- All sql statments are not a case sensitive i.e we can write sql query
+in upper case (or) lower case (or) the combination of upper & lower case characters.
+	Ex:
+	SELECT * FROM EMPLOYEE;-----executed
+	select * from employee ; -----executed
+	SeleCT *  From Employee; ---excuted
+
+	- Every sql statement should ends with "semicolon ( ; ) " which is 
+mandatory in "ORACLE"  but optional in "SQLSERVER".
+
+Sub-Languages of SQL:
+====================
+1. Data Definition Language(DDL):
+=============================
+	> create 
+	> alter
+	> rename
+	> truncate
+	> drop 
+
+2. Data Manipulation Language(DML):
+================================
+	> insert
+	> update
+	> delete
+
+3. Data Retrieval / Query Language(DRL / DQL):
+=======================================
+	> select 
+
+4. Transaction Control Language(TCL):
+================================
+	> commit
+	> rollback
+	> savepoint
+
+5. Data Control Language (DCL) :
+===========================
+	> grant
+	> revoke
+
+Working with SQL commands:
+==========================
+CREATE:
+========
+	- creating a new object in database.
+	Ex: table,view,index,procedure,function,trigger,.....etc
+
+How to create a new table in database:
+=================================
+syntax:
+======
+create table <table name>(<column name1> <datatype>[size],
+<column name2> <datatype>[size],...................);
+	
+Note:
+	In sqlserver :
+		      maximum columns in a table is 1024.
+		      maximum rows in a table is unlimited.
+	In oracle :
+		      maximum columns in a table is 1000.
+		      maximum rows in a table is unlimited.
+
+Datatypes in Database:
+===================
+
+			SQLSERVER			ORACLE
+			===========			========
+Interger datatypes:	
+			tiny int				int / number
+			small int
+			int
+			big int
+
+Float datatypes :		
+			decimal(p,s)			number(p,s)
+			number(p,s)
+
+Character / string datatypes:
+			char(size)				char(size)
+			varchar(size)			varchar2(size)
+			varchar(max)			Nchar(size)
+			Nchar(size)			Nvarchar2(size)
+			Nvarchar(size)			Long
+			Nvarchar(max)
+Date & Time datatypes :
+			Date				Date
+			Time				timestamp
+			Datetime 
+
+Binary datatypes:
+			binary(size)			Raw
+			varbinary(size)			Long raw
+			varbinary(max)			blob
+
+Special datatypes:
+			small money			clob
+			money				Nclob
+	
+Interger datatypes:	
+	- are storing "interger values" only.
+
+Float datatypes:
+	- are storing "float values" only
+
+Decimal(p,s) / Number(p,s):
+=======================
+	- in this datatype we have two arguments are,
+		> Precision(p)
+		> Scale(s)
+
+Precision(p):
+===========
+	- counting all digits including left & right sides of a decimal point
+in the expression.
+
+	Ex:
+		i) 67.24
+		precision = 4
+		
+		ii) 6783.27
+		precision = 6
+
+Scale(s):
+=======
+	- counting the right digits of a decimal point only.
+
+	Ex:
+		i) 67.24
+		precision = 4
+		scale = 2	
+	
+		ii) 6783.271
+		precision = 7
+		scale = 3
+
+	Ex:
+			Price number(8,2)
+			===============
+	1---------->  		1.00
+	10.20-----> 	10.20
+	35.21------> 	35.21
+	763.28----> 	763.28
+	7468.23---> 	7468.23
+	9999.99---->	9999.99
+	2400----------> 	2400.00
+	24000-------->	error(24000.00)
+	999.999----->	error
+	10000.00-----> 	10000.00
+	99999.99----->	99999.99
+	999999.99---->
+
+Character / String datatypes:
+========================
+	- these datatypes are used to store "string" format data only.
+	- in database string can be represented with '<string>'.
+	Ex:
+		Ename char(10)
+		=============
+	smith------> error
+	'smith'----> smith
+	123 --------> error
+	'123'-------> 123
+	45.12------> error
+	'45.12' ----> 45.12
+
+			 string format data
+				|
+	 characters only 			alphanumeric characters 
+                    string data			          string data
+	[ A-Z (or) a - z ]			[ A-Z / a-z , 0 - 9 , @,#,$,%,&,_,..]
+Ex: 'SMITH','smith',.......etc		Ex: 'Sam123@gmail.com',panno,password,...etc
+
+
+Char(size):
+=========
+	- fixed length datatype.(static)
+
+	Ex:
+		SNAME char(10)
+		=============
+'hello'---------------------> hello -------------------> 5 bytes / 10 bytes------> 5 bytes (wasted)
+
+'hel' -----------------------> hel ----------------------> 3 bytes / 10 bytes -----> 7 bytes (wasted)
+
+'he' ------------------------> he ------------------------> 2 bytes / 10 bytes -----> 8 bytes(wasted)
+
+	disadvantage:
+	=============
+	- watsed memory
+
+varchar(size) / varchar2(size):
+==========================
+	- dynamic datatype.
+
+	Ex:
+		SNAME varchar(10) / varchar2(10)
+		=============================
+'hello'---------------------> hello -------------------> 5 bytes / 5 bytes------> 0 bytes (wasted)
+
+'hel' -----------------------> hel ----------------------> 3 bytes / 3 bytes -----> 0 bytes (wasted)
+
+'he' ------------------------> he ------------------------> 2 bytes / 2 bytes -----> 0 bytes(wasted)
+
+	advantage:
+	=============
+		- saved memory
+
+Nchar(size)
+==========
+	- fixed length datatype.
+
+Nvarchar(size) & Nvarchar2(size):
+==============================
+	- dynamic datatypes.
+
+
+Note:
+=====
+	> char(size)
+	> varchar(size) / varchar2(size)
+- these datatypes are called as "Non-unicode" datatypes in database.
+- these supported to store "localized data" i.e English Language only.
+
+
+	> Nchar(size)
+	> Nvarchar(size) / Nvarchar2(size)
+- these datatypes are called as "Unicode" datatypes in database.
+- these supported to store "globalized data" i.e All National Languages.
+- here "N" stands for "National Language".
+
+The size of character datatypes:
+===========================
+		size in sqlserver		size in oracle
+		=============		===========
+char(size):	4000 bytes		2000 bytes
+varchar(size)	8000 bytes		 -na-
+varchar2(size)	- na -			4000  bytes
+varchar(max)	2gb			-na-
+long		- na -			2gb
+
+Nchar(size)	4000 bytes		2000 bytes
+Nvarchar(size)	8000 bytes		-na-
+Nvarchar2(size)	-na-			4000  bytes
+Nvarchar(max)	2gb			-na-
+long		-na-			2gb
+
+Date & Time datatypes :
+=====================
+	- storing date and time information of a particular transaction.
+
+Binary datatypes:
+===============
+	- storing image / audio / video files in the form of 010101000101010
+binary format.
+
+Special datatypes:
+=================
+small money : it will store currency format data(RR.PP)			
+money 	     : it will store currency format data(RR.PP)
+- these datatypes available in SQLSERVER only.			
+
+
+clob :	it stands for charcter large object.
+	will store non-unicode characters.
+	max size is 4gb
+
+Nclob: 	it stands for national charcter large object.
+	will store unicode characters.
+	max size is 4gb
+- these datatypes are available in ORACLE only.
+======================================================================
+How to create a new table in database:
+=================================
+syntax:
+======
+create table <table name>(<column name1> <datatype>[size],
+<column name2> <datatype>[size],...................);
+
+EX:
+SQL> CREATE TABLE STUDENT(STID INT,SNAME CHAR(10),SFEE NUMBER(6,2));
+Table created.
+
+To view the structure of a table in Oracle:
+===================================
+syntax:
+======
+	desc <table name>; [ describe ]
+
+Ex:
+	desc student;
+
+To view the structure of a table in SQLserver:
+=======================================
+syntax:
+======
+	sp_help <table name>; [ sp_help is a pre-defined stored procedure ]
+Ex:
+	sp_help student;
+
+ALTER:
+======
+	- to change / modify the structure of a table.
+
+Sub_commands of alter in ORACLE:
+==============================
+	 > alter - modify
+	 > alter - add
+	 > alter - rename
+	 > alter - drop 
+
+Sub_commands of alter in SQLSERVER:
+=================================
+	 > alter - alter column
+	 > alter - add
+	 > sp_rename
+	 > alter - drop 
+
+In ORACLE:
+==========
+alter - modify:
+============
+	- to change datatype and also the size of datatype of a particular column.
+syntax:
+======
+alter table <table name> modify <column name> <new datatype>[new size];
+
+Ex:
+SQL> ALTER TABLE STUDENT MODIFY SNAME VARCHAR2(20);
+
+In SQLSERVER:
+=============
+alter - alter column:
+=================
+	- to change datatype and also the size of datatype of a particular column.
+syntax:
+======
+alter table <table name> alter column <column name> <new datatype>[new size];
+
+Ex:
+SQL> ALTER TABLE STUDENT ALTER COLUMN SNAME VARCHAR(20);
+
+alter-add:
+========
+	- to add a new column to an existing table.
+syntax:
+=======
+alter table <table name> add <new column name> <datatype>[size];
+
+Ex:
+SQL> ALTER TABLE STUDENT ADD SADDRESS VARCHAR(50);
+
+alter - drop:
+==========
+	- to drop a column from an existing table.
+syntax:
+======
+alter table <table name> drop <column> <column name>;
+
+Ex:
+SQL> ALTER TABLE STUDENT DROP COLUMN SFEE;
+
+How to change a column name in table:
+=================================
+syntax for Oracle:
+===============
+alter table <table name> rename <column> <old column name> to <new column name>;
+
+Ex:
+SQL> ALTER TABLE STUDENT RENAME COLUMN SNAME TO SDETAILS;
+
+How to change a column name in table:
+=================================
+syntax for SQLserver:
+==================
+sp_rename '<table name>.<old column name>' , '<new column name>';
+
+Ex:
+sp_rename 'student.sname','sdetails';
+
+How to change a table name in database:
+==================================
+syntax for Oracle:
+===============
+rename <old table name> to <new table name>;
+
+Ex:
+SQL> RENAME STUDENT TO STUDENTS;
+
+syntax for SQL server:
+===================
+sp_rename '<old table name>','<new table name>';
+
+Ex:
+sp_rename 'student','students';
+
+TRUNCATE:
+==========
+	- to delete all rows from a table at a time.
+	- this command is used to delete rows but not columns in a table.
+	- by using truncate we cannot delete a specific row from a table because
+truncate command is not supporting "where" clause condition.
+	- this command is deleting rows permanently.
+
+syntax:
+======
+truncate table <table name>;
+
+Ex:
+SQL> TRUNCATE TABLE STUDENT WHERE STID=1022;-----NOT ALLOWED
+SQL> TRUNCATE TABLE STUDENT;-----ALLOWED
+
+DROP:
+=====
+	- to delete the entire table(i.e collection of rows & columns) permanently.
+
+syntax for Oracle:
+===============
+drop table <table name> purge;
+
+Ex:
+drop table student purge;
+
+syntax for SQLserver:
+==================
+drop table <table name>;
+
+Ex:
+drop table student;
+
+2) Data Manipulation Language(DML):
+===============================
+i) INSERT:
+========
+	- to insert data(row) into a table.
+	- there are two methods to insert data into a table.
+
+Method-1:
+========
+syntax:
+======
+insert into <table name> values(value1,value2,.......);
+
+Ex:
+SQL> INSERT INTO DEPT VALUES(10,'DB','HYD');
+
+Note:
+=====
+	- in this method we will insert values into a table as per columns in a table.
+i.e no.of passing values must be same as no.f columns in a table.
+
+Method-2:
+========
+syntax:
+======
+insert into <tablename>(required column names)values(value1,value2,........);
+
+Ex:
+SQL> INSERT INTO DEPT(DEPTNO,DNAME,LOC)VALUES(20,'JAVA','MUMBAI');
+SQL> INSERT INTO DEPT(DEPTNO,DNAME)VALUES(30,'.NET');
+SQL> INSERT INTO DEPT(DEPTNO)VALUES(40);
+
+Note:
+====
+	- in this method we will insert values for required columns only.
+
+ii) UPDATE:
+==========
+	- to updating all rows data in a table at a time.
+		(or)
+	- to updating a specific row data in a table by using "where" condition.
+
+syntax:
+======
+update <table name> set <column name1>=<value1>,<column name2>=<value2>,
+.................................[where <condition>];
+
+Ex:
+waq to update employees salaries as 8000 who are working as a "manager"?
+SQL> UPDATE EMP SET SAL=8000 WHERE JOB='MANAGER';
+
+Ex:
+waq to update all employees commission as 500?
+SQL> UPDATE EMP SET COMM=500;
+
+DELETE:
+=======
+	- to delete all rows from a table at a time.
+		(or)
+	- to delete a specific row from a table by using
+using "where" clause condition.
+
+syntax:
+=======
+delete from <table name> [where <condition>];
+
+Ex:
+waq to delete employee details from a table whose empno is
+7788 ?
+SQL> DELETE FROM EMP WHERE EMPNO=7788;
+
+Ex:
+waq to delete all employees details from a table?
+SQL> DELETE FROM EMP;
+
+DELETE vs TRUNCATE:
+====================
+		
+	DELETE				TRUNCATE
+	=======				==========
+1. it is a DML command.			1. it is a DDL command.
+
+2. to delete a specific row			2. we cannot delete a specific
+from a table.				row from a table.
+
+3. it supports "WHERE" clause 		3. it doesnot supports "WHERE"
+condition.					clause condition.
+
+4. deleted data temporarly.			4. deleted data permanently.
+
+5. we can restore deleted data into 		5. we cannot restore deleted data
+a table by using "ROLLBACK".			into a table by using "ROLLBACK".
+
+6. query execution speed is slow.		6. query execution speed is fast.
+(deleting rows in one-by-one row)		(deleting all rows as a page wise)
+
+Data Query / Retrieval Language(DQL / DRL):
+=====================================
+SELECT:
+=======
+	- to retrieve all rows from a table at a time.
+		(or)
+	- to retrieval a specific row from a table by using "WHERE" clause condition.
+
+syntax:
+======
+select  * / <list of columns> from <table name> [where <condition>];
+
+	Here, " * " ---------- all columns in a table.
+
+Ex:
+waq to display all employees details from a table?
+SQL> SELECT * FROM EMP;
+
+Ex:
+waq to display all employees EMPNO,ENAME,JOB,SALARY  details from a table?
+SQL> SELECT EMPNO,ENAME,JOB,SAL FROM EMP;
+
+Ex:
+waq to display employee details who are working as a "manager"?
+SQL> SELECT * FROM EMP WHERE JOB='MANAGER';
+
+Ex:
+waq to display ENAMES from a table who are working under DEPTNO is 20?
+SQL> SELECT ENAME FROM EMP WHERE DEPTNO=20;
+
+ALIAS NAMES:
+============
+	- it is a temporary name for column and table.
+	- these are created at two levels.
+i) column level alias :
+=================
+	- in this level, we are creating alias name for columns in a table.
+syntax:
+======
+	<column name> [as] <column alias name>
+
+ii) table level alias:
+================
+	- in this level, we are creating alias name for table name.
+syntax:
+=======
+	<table name> [as] <table alias name>;
+
+
+syntax for column + table alias with select command:
+==============================================
+select <column name1> [as] <column alias name1>,<column name2> [as] 
+<column alias name2>,.........from <table name> [as] <table alias name>;
+
+Ex:
+SQL> SELECT DEPTNO X,DNAME Y,LOC Z FROM DEPT D;
+
+DISTINCT KEYWORD:
+===================
+	- to eliminate duplicate values from a particular column.
+syntax:
+======
+	distinct <column name>
+
+Ex:
+SQL> SELECT DISTINCT JOB FROM EMP;
+SQL> SELECT DISTINCT DEPTNO FROM EMP;
+
+
+
+
+
+
+
+
+
+
+
+
+
+	 
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+	
+			
+
+
+
+
+			 
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+

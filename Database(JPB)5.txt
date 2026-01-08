@@ -1,0 +1,97 @@
+DATAINTEGRITY:
+==============	
+	- Dataintegrity is nothing but to maintain accurate and consistency data
+/ information in database tables.
+	- these are two ways,
+		1. Declarative Dataintegrity
+			> implementing by using "Constraints"(SQL).
+		2. Procedural Dataintegrity
+			> implementing by using "Triggers"(PL/SQL).
+
+1. Declarative Dataintegrity:
+=======================
+	- it again three types,
+		i) Entity integrity
+		ii) Referencial integrity
+		iii) Domain integrity
+
+	- to implement the above three integrity rules then we use a concept is 
+called as "constraints".
+
+i) Entity integrity:
+===============
+	- it ensure that each row in a table should identify with uniqueness.
+	- to implement this mechanism we need "Unique / Primary key"  constraints.
+
+ii) Referencial integrity:
+====================
+	- to make relationship between tables for taking an identity from one 
+table to another table.
+	- to implement this technique we need a constraint is called as 
+"Foreign key / References key".
+
+iii) Domain integrity:
+==================
+	- a domain is nothing but a column.
+	- it ensure that to check the values before accepting into a column.
+	- to implement this integrity we use "check,not null,default" constraints.
+
+CONSTRAINTS:
+=============
+	- are used to restricted / enforce the unwanted(invalid) data into a table.
+	- there are six types of constraints keys,
+		i) Unique
+		ii) Not null
+		iii) Check
+		iv) Primary key
+		v) Foreign key
+		vi) Default
+
+	- all databases are supporting to define constraints at two levels,
+		i) column level 
+		ii) table level
+
+i) column level :
+==============
+	- in this level we can define a constraint on each column wise.
+
+syntax:
+=======
+create table <table name>(<column name1> <datatype>[size] <constraint name>,
+<column name2> <datatype>[size] <constraint name>,..........................);
+
+ii) table level:
+============
+	- in this level we can define a constraint after all columns definitions.
+i.e the end of the table definition.
+
+syntax:
+======
+create table <table name>(<column name1> <datatype>[size],
+<column name2> <datatype>[size],...............,
+<constraint name>(<column name1>,<column name2>,........));
+     .............................................................................
+		|
+	 composite constraint 
+
+i) Unique:
+========
+	- to restricted duplicate values but allowed nulls(empty).
+
+Ex:
+column level:
+============
+SQL> CREATE TABLE TEST1(SNO INT UNIQUE,NAME VARCHAR2(10)UNIQUE);
+
+TESTING:
+SQL> INSERT INTO TEST1 VALUES(1,'A');-----allowed
+SQL> INSERT INTO TEST1 VALUES(1,'A');-----not allowed
+SQL> INSERT INTO TEST1 VALUES(null,null);-----allowed
+
+table level:
+==========
+SQL> CREATE TABLE TEST2(SNO INT,NAME VARCHAR2(10),UNIQUE(SNO,NAME));
+
+
+TESTING:
+SQL> INSERT INTO TEST2 VALUES(1,'A'); 
