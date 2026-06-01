@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Export</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.3.0/github-markdown-dark.min.css">
+  <script>
+      window.MathJax = {
+          loader: { load: ['[tex]/ams', '[tex]/boldsymbol'] },
+          tex: {
+              inlineMath: [['$', '$'], ['\\(', '\\)']],
+              displayMath: [['$$', '$$'], ['\\[', '\\]']],
+              processEscapes: true,
+              packages: { '[+]': ['ams', 'boldsymbol'] }
+          }
+      };
+  </script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.min.js"></script>
+  <style>
+      body {
+          background-color: #0d1117;
+          color: #c9d1d9;
+      }
+      .markdown-body {
+          box-sizing: border-box;
+          min-width: 200px;
+          max-width: 980px;
+          margin: 0 auto;
+          padding: 45px;
+          background-color: #0d1117;
+          color: #c9d1d9;
+      }
+
+      /* Syntax Highlighting */
+      .hljs-doctag, .hljs-keyword, .hljs-template-tag, .hljs-template-variable, .hljs-type, .hljs-variable.language_ { color: #ff7b72; }
+      .hljs-title, .hljs-title.class_, .hljs-title.class_.inherited__, .hljs-title.function_ { color: #d2a8ff; }
+      .hljs-attr, .hljs-attribute, .hljs-literal, .hljs-meta, .hljs-number, .hljs-operator, .hljs-variable, .hljs-selector-attr, .hljs-selector-class, .hljs-selector-id { color: #79c0ff; }
+      .hljs-regexp, .hljs-string, .hljs-meta .hljs-string { color: #a5d6ff; }
+      .hljs-built_in, .hljs-symbol { color: #ffa657; }
+      .hljs-comment, .hljs-code, .hljs-formula { color: #8b949e; }
+      .hljs-name, .hljs-quote, .hljs-selector-tag, .hljs-selector-pseudo { color: #7ee787; }
+      .hljs-subst { color: #c9d1d9; }
+      .hljs-section { color: #1f6feb; font-weight: bold; }
+      .hljs-bullet { color: #79c0ff; }
+      .hljs-emphasis { font-style: italic; }
+      .hljs-strong { font-weight: bold; }
+      .hljs-addition { color: #aff5b4; background-color: #033a16; }
+      .hljs-deletion { color: #ffdcd7; background-color: #67060c; }
+
+      .markdown-alert {
+          padding: 0.5rem 1rem;
+          margin-bottom: 16px;
+          border-left: 0.25em solid;
+          border-radius: 0.375rem;
+      }
+      .markdown-alert > :last-child {
+          margin-bottom: 0;
+      }
+      .markdown-alert-title {
+          margin: 0 0 8px;
+          font-weight: 600;
+          line-height: 1.25;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+      }
+      .markdown-alert-icon {
+          display: inline-flex;
+          width: 16px;
+          height: 16px;
+      }
+      .markdown-alert-icon svg {
+          width: 16px;
+          height: 16px;
+          fill: currentColor;
+      }
+      .markdown-alert-note { color: #4493f8; border-left-color: #4493f8; background-color: rgba(31, 111, 235, 0.15); }
+      .markdown-alert-tip { color: #3fb950; border-left-color: #3fb950; background-color: rgba(35, 134, 54, 0.15); }
+      .markdown-alert-important { color: #ab7df8; border-left-color: #ab7df8; background-color: rgba(137, 87, 229, 0.15); }
+      .markdown-alert-warning { color: #d29922; border-left-color: #d29922; background-color: rgba(210, 153, 34, 0.18); }
+      .markdown-alert-caution { color: #f85149; border-left-color: #f85149; background-color: rgba(248, 81, 73, 0.18); }
+      .markdown-alert > *:not(.markdown-alert-title) { color: #c9d1d9; }
+
+      .frontmatter-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 24px;
+          font-size: 14px;
+      }
+      .frontmatter-table th,
+      .frontmatter-table td {
+          border: 1px solid #30363d;
+          padding: 8px 12px;
+          text-align: left;
+      }
+      .frontmatter-table th {
+          font-weight: 600;
+          background-color: #161b22;
+          width: 150px;
+      }
+
+      /* Footnote styles */
+      .footnotes {
+          margin-top: 1.5rem;
+          font-size: 0.9em;
+          border-top: 1px solid #30363d;
+          padding-top: 8px;
+      }
+      .footnotes ol {
+          padding-left: 1.5em;
+      }
+      .footnotes ol > li::marker {
+          content: "[" counter(list-item) "] ";
+          font-weight: 600;
+      }
+      .footnotes li > p {
+          margin: 0.2em 0;
+      }
+      .footnote-ref a,
+      .footnote-backref {
+          text-decoration: none;
+      }
+      .footnote-backref {
+          margin-left: 0.4em;
+      }
+      a.reference-link {
+          font-size: 0.75em;
+          letter-spacing: -0.02em;
+          line-height: 1;
+          vertical-align: super;
+          position: relative;
+          top: 0.08em;
+      }
+
+      /* Mermaid and Math styles */
+      .mermaid-container {
+          position: relative;
+          margin-bottom: 16px;
+      }
+      .math-block {
+          margin: 1em 0;
+          overflow-x: auto;
+          text-align: center;
+      }
+
+      @media (max-width: 767px) {
+          .markdown-body {
+              padding: 15px;
+          }
+      }
+  </style>
+</head>
+<body>
+  <article class="markdown-body">
+      <h1>Spring Security + OAuth 2.0 — The Complete Deep-Dive Guide</h1>
+<blockquote>
+<p>A thorough, beginner-friendly documentation of how Spring Security implements OAuth 2.0 — every role, every class, every configuration property, every flow — explained with real code and plain-English commentary.</p>
+</blockquote>
+<hr>
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#1-how-spring-security-fits-into-the-picture">How Spring Security Fits Into the Picture</a></li>
+<li><a href="#2-the-three-roles-spring-security-plays">The Three Roles Spring Security Plays</a></li>
+<li><a href="#3-project-setup">Project Setup — Dependencies You Need</a></li>
+<li><a href="#4-spring-security-architecture-primer">Spring Security Architecture Primer</a></li>
+<li><a href="#5-oauth2-login">OAuth2 Login — "Sign in with Google/GitHub"</a><ul>
+<li>ClientRegistration</li>
+<li>ClientRegistrationRepository</li>
+<li>The Login Endpoint &amp; Redirect Endpoint</li>
+<li>What Happens Under the Hood</li>
+<li>Full Working Configuration</li>
+</ul>
+</li>
+<li><a href="#6-oauth2-client">OAuth2 Client — Calling Protected APIs</a><ul>
+<li>OAuth2AuthorizedClient</li>
+<li>OAuth2AuthorizedClientManager</li>
+<li>OAuth2AuthorizedClientProvider</li>
+<li>Using RestClient with OAuth2</li>
+<li>Using WebClient with OAuth2</li>
+<li>Client Credentials Grant</li>
+</ul>
+</li>
+<li><a href="#7-oauth2-resource-server">OAuth2 Resource Server — Protecting Your API</a><ul>
+<li>JWT Token Validation</li>
+<li>JwtDecoder Explained</li>
+<li>Opaque Token Introspection</li>
+<li>Customizing Authorities from JWT Claims</li>
+<li>Full Working Configuration</li>
+</ul>
+</li>
+<li><a href="#8-oauth2-authorization-server">OAuth2 Authorization Server — Being the Auth Server</a></li>
+<li><a href="#9-all-configuration-properties">All Configuration Properties Explained</a></li>
+<li><a href="#10-jwt-deep-dive">JWT Deep Dive in Spring Security</a></li>
+<li><a href="#11-custom-token-claim-mapping">Custom Token Claim Mapping</a></li>
+<li><a href="#12-method-level-security">Method-Level Security with OAuth2 Scopes</a></li>
+<li><a href="#13-testing-oauth2">Testing OAuth2 in Spring Boot</a></li>
+<li><a href="#14-complete-real-world-example">Complete Real-World Example — All Three Roles Together</a></li>
+<li><a href="#15-common-mistakes">Common Mistakes and How to Avoid Them</a></li>
+<li><a href="#16-quick-reference-card">Quick Reference Card</a></li>
+</ol>
+<hr>
+<h2>1. How Spring Security Fits Into the Picture</h2>
+<p>Before writing a single line of code, you need to understand <em>why</em> Spring Security is involved in OAuth2 at all.</p>
+<p>OAuth2 is just a specification — a document that says "here is the protocol for delegated authorization." Someone still has to implement it. In the Spring world, Spring Security is the library that does that implementation for you. It provides the filters, the classes, the request handlers, and the auto-configuration that translate the abstract OAuth2 protocol into working Java code.</p>
+<p>Think of it this way: OAuth2 is the recipe, and Spring Security is the chef that cooks it. You just need to tell the chef what ingredients to use (your client ID, secret, scopes, provider URLs), and it handles the complex cooking process — request signing, token exchange, validation, session management — automatically.</p>
+<p>Spring Security integrates OAuth2 at the Servlet Filter level. Every HTTP request to your application passes through a chain of security filters before it reaches your controllers. When OAuth2 is configured, Spring Security adds specific filters to this chain that know how to initiate authorization flows, handle callbacks, validate tokens, and set up the security context.</p>
+<hr>
+<h2>2. The Three Roles Spring Security Plays</h2>
+<p>Spring Security implements three distinct roles from the OAuth2 specification. It is important to understand that a single Spring Boot application can play <strong>one, two, or even all three</strong> of these roles simultaneously, depending on how it is configured.</p>
+<p><strong>Role 1: OAuth2 Client.</strong> Your application wants to access a protected resource on behalf of a user. This includes "Sign in with Google" flows (which is actually a special case of the client role). The client role handles authorization code flows, token exchange, and storing obtained tokens.</p>
+<p><strong>Role 2: OAuth2 Resource Server.</strong> Your application exposes a REST API that is protected by OAuth2 tokens. Other applications (clients) will send Bearer tokens when calling your API, and your application must validate those tokens and enforce access control.</p>
+<p><strong>Role 3: OAuth2 Authorization Server.</strong> Your application <em>is</em> the authorization server — the entity that issues tokens, handles user login and consent, and manages client registrations. This is the most complex role and is handled by the Spring Authorization Server project (a separate library built on top of Spring Security).</p>
+<p>A typical microservices architecture has one Authorization Server (or uses a third-party like Keycloak/Okta), several Resource Servers (your backend APIs), and one or more Clients (your frontend app or gateway).</p>
+<hr>
+<h2>3. Project Setup</h2>
+<p>Let's start with the right dependencies. Spring Boot makes this easy with starters — each starter corresponds to one of the three roles.</p>
+<h3>For OAuth2 Client (Login + Calling APIs on behalf of users)</h3>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- pom.xml --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-oauth2-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h3>For OAuth2 Resource Server (Protecting your API)</h3>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-oauth2-resource-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h3>For OAuth2 Authorization Server (Being the auth provider)</h3>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-oauth2-authorization-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h3>If You Need All Three Roles in One App</h3>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-oauth2-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-oauth2-resource-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-oauth2-authorization-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><blockquote>
+<p><strong>Mental Model:</strong> Think of each starter as unlocking a different capability. The client starter says "I want to <em>use</em> OAuth2 to get tokens." The resource-server starter says "I want to <em>accept</em> OAuth2 tokens and validate them." The authorization-server starter says "I want to <em>issue</em> OAuth2 tokens."</p>
+</blockquote>
+<hr>
+<h2>4. Spring Security Architecture Primer</h2>
+<p>To understand how OAuth2 works in Spring Security, you need to understand the basic architecture first. Don't worry — the key concepts are straightforward.</p>
+<h3>The Security Filter Chain</h3>
+<p>When an HTTP request arrives at your Spring Boot application, it doesn't go directly to your controller. It first passes through a <strong>SecurityFilterChain</strong> — an ordered list of security filters. Each filter inspects or modifies the request. If a filter decides the request is unauthorized, it stops the chain and sends back an error response (401 or 403). Only if all filters pass does the request reach your controller.</p>
+<p>You configure the SecurityFilterChain using a <code>@Bean</code> of type <code>SecurityFilterChain</code>:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableWebSecurity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecurityConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">securityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+        <span class="hljs-comment">// HttpSecurity is a fluent builder that lets you configure</span>
+        <span class="hljs-comment">// which filters are added to the chain and how they behave.</span>
+        http
+            .authorizeHttpRequests(auth -&gt; auth
+                .anyRequest().authenticated()   <span class="hljs-comment">// every request needs authentication</span>
+            )
+            .oauth2Login(Customizer.withDefaults()); <span class="hljs-comment">// add OAuth2 login filters</span>
+
+        <span class="hljs-keyword">return</span> http.build(); <span class="hljs-comment">// build and return the chain</span>
+    }
+}</code></pre><h3>The SecurityContext and Authentication Object</h3>
+<p>Once a user is authenticated, Spring Security stores their identity in a <strong>SecurityContext</strong>, which is tied to the current thread. The identity is represented by an <strong>Authentication</strong> object. In the OAuth2 world:</p>
+<ul>
+<li>After OAuth2 Login, the <code>Authentication</code> is typically an <code>OAuth2AuthenticationToken</code>, which contains an <code>OAuth2User</code> (the user's profile from the provider).</li>
+<li>After JWT validation in a Resource Server, the <code>Authentication</code> is a <code>JwtAuthenticationToken</code>, which contains the decoded JWT claims.</li>
+</ul>
+<p>You can access the current user anywhere in your code like this:</p>
+<pre><code class="hljs java"><span class="hljs-comment">// Get the currently authenticated user</span>
+<span class="hljs-type">Authentication</span> <span class="hljs-variable">auth</span> <span class="hljs-operator">=</span> SecurityContextHolder.getContext().getAuthentication();
+
+<span class="hljs-comment">// If the user logged in via OAuth2</span>
+<span class="hljs-keyword">if</span> (auth <span class="hljs-keyword">instanceof</span> OAuth2AuthenticationToken token) {
+    <span class="hljs-type">OAuth2User</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> token.getPrincipal();
+    <span class="hljs-type">String</span> <span class="hljs-variable">email</span> <span class="hljs-operator">=</span> user.getAttribute(<span class="hljs-string">"email"</span>);
+    <span class="hljs-type">String</span> <span class="hljs-variable">name</span>  <span class="hljs-operator">=</span> user.getAttribute(<span class="hljs-string">"name"</span>);
+}
+
+<span class="hljs-comment">// If this is a Resource Server validating a JWT</span>
+<span class="hljs-keyword">if</span> (auth <span class="hljs-keyword">instanceof</span> JwtAuthenticationToken token) {
+    <span class="hljs-type">Jwt</span> <span class="hljs-variable">jwt</span> <span class="hljs-operator">=</span> token.getToken();
+    <span class="hljs-type">String</span> <span class="hljs-variable">subject</span> <span class="hljs-operator">=</span> jwt.getSubject(); <span class="hljs-comment">// "sub" claim</span>
+    List&lt;String&gt; scopes = jwt.getClaimAsStringList(<span class="hljs-string">"scope"</span>);
+}</code></pre><hr>
+<h2>5. OAuth2 Login — "Sign in with Google/GitHub"</h2>
+<p>OAuth2 Login is the feature that lets users click "Sign in with Google" (or GitHub, Okta, Keycloak, Facebook, etc.) and get authenticated in your application using their existing account at that provider.</p>
+<p>Under the hood, this uses the <strong>Authorization Code flow</strong> with OpenID Connect. It is technically an OAuth2 Client feature, but it's so common and important that Spring Security gives it its own dedicated configuration section.</p>
+<h3>Understanding <code>ClientRegistration</code></h3>
+<p>A <code>ClientRegistration</code> is a Java object that holds ALL the information about one OAuth2 provider relationship — your client ID, secret, the scopes you need, the URLs of the provider's endpoints, and more.</p>
+<p>Think of it as a filled-out registration form that describes: "I am registered with Google as client ID <code>abc123</code>, my secret is <code>xyz</code>, I need the <code>openid</code> and <code>profile</code> scopes, and here are Google's authorization and token URLs."</p>
+<pre><code class="hljs java"><span class="hljs-comment">// This is what a ClientRegistration looks like when built manually.</span>
+<span class="hljs-comment">// In practice, Spring Boot builds this from your application.yml properties.</span>
+<span class="hljs-type">ClientRegistration</span> <span class="hljs-variable">googleRegistration</span> <span class="hljs-operator">=</span> ClientRegistration
+    .withRegistrationId(<span class="hljs-string">"google"</span>)         <span class="hljs-comment">// unique name you give this registration</span>
+    .clientId(<span class="hljs-string">"your-google-client-id"</span>)    <span class="hljs-comment">// from Google Developer Console</span>
+    .clientSecret(<span class="hljs-string">"your-google-secret"</span>)   <span class="hljs-comment">// from Google Developer Console</span>
+    .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) <span class="hljs-comment">// the flow type</span>
+    .redirectUri(<span class="hljs-string">"{baseUrl}/login/oauth2/code/{registrationId}"</span>)  <span class="hljs-comment">// your callback URL</span>
+    .scope(<span class="hljs-string">"openid"</span>, <span class="hljs-string">"profile"</span>, <span class="hljs-string">"email"</span>)  <span class="hljs-comment">// what you're asking for</span>
+    .authorizationUri(<span class="hljs-string">"https://accounts.google.com/o/oauth2/auth"</span>)  <span class="hljs-comment">// where user logs in</span>
+    .tokenUri(<span class="hljs-string">"https://oauth2.googleapis.com/token"</span>)                 <span class="hljs-comment">// where tokens come from</span>
+    .userInfoUri(<span class="hljs-string">"https://www.googleapis.com/oauth2/v3/userinfo"</span>)    <span class="hljs-comment">// where to get user profile</span>
+    .userNameAttributeName(<span class="hljs-string">"sub"</span>)         <span class="hljs-comment">// which claim is the unique user ID</span>
+    .jwkSetUri(<span class="hljs-string">"https://www.googleapis.com/oauth2/v3/certs"</span>) <span class="hljs-comment">// for JWT verification</span>
+    .clientName(<span class="hljs-string">"Google"</span>)                 <span class="hljs-comment">// display name</span>
+    .build();</code></pre><h3>The Easy Way: Spring Boot <code>application.yml</code></h3>
+<p>Spring Boot has built-in support for common providers (Google, GitHub, Facebook, Okta). For these, you only need to provide the client ID and secret — Spring Boot fills in all the endpoint URLs automatically:</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">client:</span>
+        <span class="hljs-attr">registration:</span>
+          <span class="hljs-comment"># "google" is a magic keyword Spring Boot recognizes</span>
+          <span class="hljs-attr">google:</span>
+            <span class="hljs-attr">client-id:</span> <span class="hljs-string">your-google-client-id</span>
+            <span class="hljs-attr">client-secret:</span> <span class="hljs-string">your-google-client-secret</span>
+            <span class="hljs-attr">scope:</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">openid</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">profile</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">email</span>
+          
+          <span class="hljs-comment"># "github" is also recognized</span>
+          <span class="hljs-attr">github:</span>
+            <span class="hljs-attr">client-id:</span> <span class="hljs-string">your-github-client-id</span>
+            <span class="hljs-attr">client-secret:</span> <span class="hljs-string">your-github-client-secret</span></code></pre><p>That's truly all you need in <code>application.yml</code> for Google and GitHub. Spring Boot's auto-configuration fills in all the endpoint URLs from its built-in defaults.</p>
+<h3>Custom Provider (Keycloak, Okta, Your Own Auth Server)</h3>
+<p>For providers Spring Boot doesn't know about by default, you also configure the provider section:</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">client:</span>
+        <span class="hljs-attr">registration:</span>
+          <span class="hljs-attr">my-keycloak:</span>                      <span class="hljs-comment"># you choose this name</span>
+            <span class="hljs-attr">provider:</span> <span class="hljs-string">keycloak-local</span>        <span class="hljs-comment"># points to the provider section below</span>
+            <span class="hljs-attr">client-id:</span> <span class="hljs-string">my-app-client</span>
+            <span class="hljs-attr">client-secret:</span> <span class="hljs-string">my-secret</span>
+            <span class="hljs-attr">authorization-grant-type:</span> <span class="hljs-string">authorization_code</span>
+            <span class="hljs-attr">scope:</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">openid</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">profile</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">email</span>
+        
+        <span class="hljs-attr">provider:</span>
+          <span class="hljs-attr">keycloak-local:</span>                   <span class="hljs-comment"># this name must match registration's provider</span>
+            <span class="hljs-comment"># issuer-uri is the magic property — Spring will auto-discover</span>
+            <span class="hljs-comment"># all other endpoints from the /.well-known/openid-configuration URL</span>
+            <span class="hljs-attr">issuer-uri:</span> <span class="hljs-string">http://localhost:8080/realms/myrealm</span></code></pre><p>The <code>issuer-uri</code> property is powerful: Spring Security automatically appends <code>/.well-known/openid-configuration</code> to that URL and fetches the provider's metadata document, which contains all the endpoint URLs. This means you don't have to manually specify <code>authorization-uri</code>, <code>token-uri</code>, <code>jwks-uri</code>, etc. — they're all discovered automatically.</p>
+<h3>Understanding <code>ClientRegistrationRepository</code></h3>
+<p><code>ClientRegistrationRepository</code> is a Spring bean that stores all your <code>ClientRegistration</code> objects. When Spring Boot sees your <code>application.yml</code> configuration, it automatically creates an <code>InMemoryClientRegistrationRepository</code> containing all the registrations you defined.</p>
+<p>Spring Security uses this repository throughout the OAuth2 flow to look up registration details by the registration ID (like "google" or "my-keycloak").</p>
+<pre><code class="hljs java"><span class="hljs-comment">// You rarely need to interact with this directly,</span>
+<span class="hljs-comment">// but you can inject it to look up registrations programmatically.</span>
+<span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">InfoController</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ClientRegistrationRepository clientRegistrationRepository;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">InfoController</span><span class="hljs-params">(ClientRegistrationRepository repo)</span> {
+        <span class="hljs-built_in">this</span>.clientRegistrationRepository = repo;
+    }
+
+    <span class="hljs-meta">@GetMapping("/client-info")</span>
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">clientInfo</span><span class="hljs-params">()</span> {
+        <span class="hljs-type">ClientRegistration</span> <span class="hljs-variable">google</span> <span class="hljs-operator">=</span> clientRegistrationRepository.findByRegistrationId(<span class="hljs-string">"google"</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"Client ID: "</span> + google.getClientId();
+    }
+}</code></pre><h3>The Login and Redirect Endpoints</h3>
+<p>When you add <code>.oauth2Login()</code> to your security configuration, Spring Security automatically registers two special URL endpoints in your application:</p>
+<p><strong>The Authorization Endpoint</strong> (also called the Login Initiation Endpoint):<br><code>/oauth2/authorization/{registrationId}</code></p>
+<p>When a user visits this URL (e.g., <code>/oauth2/authorization/google</code>), Spring Security builds the OAuth2 authorization request URL and redirects the user's browser to Google's login page. This is the URL your "Sign in with Google" button should link to.</p>
+<p><strong>The Redirect Endpoint</strong> (also called the Callback Endpoint):<br><code>/login/oauth2/code/{registrationId}</code></p>
+<p>This is where Google (or any provider) redirects the user back after login. Spring Security handles this URL automatically — it extracts the <code>code</code> parameter, exchanges it for tokens, fetches the user profile, and creates an authenticated session.</p>
+<p>You must register the redirect endpoint URL with your OAuth2 provider. For example, in Google Developer Console you'd add: <code>http://localhost:8080/login/oauth2/code/google</code></p>
+<h3>What Happens Under the Hood — Step by Step</h3>
+<p>Understanding this internal flow will help you debug problems and understand error messages:</p>
+<p><strong>Step 1:</strong> User visits <code>/oauth2/authorization/google</code>. The <code>OAuth2AuthorizationRequestRedirectFilter</code> intercepts this, builds the authorization URL (with client_id, scope, state, redirect_uri), and sends a redirect response to the browser.</p>
+<p><strong>Step 2:</strong> The user's browser follows the redirect to <code>https://accounts.google.com/o/oauth2/auth?...</code> and Google shows the login/consent page. The <code>state</code> parameter (a random string) is stored in the user's session for CSRF protection.</p>
+<p><strong>Step 3:</strong> The user logs in and approves. Google redirects the browser back to your app at <code>/login/oauth2/code/google?code=AUTH_CODE&amp;state=RANDOM_STATE</code>.</p>
+<p><strong>Step 4:</strong> The <code>OAuth2LoginAuthenticationFilter</code> intercepts this request. It verifies the <code>state</code> matches what was stored (CSRF check). Then it calls Google's token endpoint to exchange the authorization code for tokens (Access Token, ID Token, optionally Refresh Token).</p>
+<p><strong>Step 5:</strong> Spring Security uses the Access Token to call Google's UserInfo endpoint (<code>https://www.googleapis.com/oauth2/v3/userinfo</code>) and gets the user's profile (name, email, picture, etc.).</p>
+<p><strong>Step 6:</strong> The <code>OAuth2UserService</code> creates an <code>OAuth2User</code> object from the profile data. If OpenID Connect is being used (scope includes <code>openid</code>), an <code>OidcUser</code> is created instead, which also includes ID Token claims.</p>
+<p><strong>Step 7:</strong> Spring Security creates an <code>OAuth2AuthenticationToken</code>, stores it in the <code>SecurityContext</code>, and redirects the user to the originally requested page (or <code>/</code> by default).</p>
+<h3>Full Working Configuration — OAuth2 Login</h3>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableWebSecurity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecurityConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">securityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+        http
+            <span class="hljs-comment">// Define which URLs require authentication</span>
+            .authorizeHttpRequests(auth -&gt; auth
+                .requestMatchers(<span class="hljs-string">"/"</span>, <span class="hljs-string">"/public/**"</span>).permitAll()  <span class="hljs-comment">// these are open to everyone</span>
+                .anyRequest().authenticated()                     <span class="hljs-comment">// everything else requires login</span>
+            )
+
+            <span class="hljs-comment">// Enable OAuth2 Login with default settings.</span>
+            <span class="hljs-comment">// Spring Security will handle /oauth2/authorization/* and /login/oauth2/code/*</span>
+            .oauth2Login(oauth2 -&gt; oauth2
+                <span class="hljs-comment">// Optional: customize where users go after login</span>
+                .defaultSuccessUrl(<span class="hljs-string">"/dashboard"</span>, <span class="hljs-literal">true</span>)
+                <span class="hljs-comment">// Optional: customize the login page URL</span>
+                .loginPage(<span class="hljs-string">"/login"</span>)
+                <span class="hljs-comment">// Optional: customize what happens on failure</span>
+                .failureUrl(<span class="hljs-string">"/login?error=true"</span>)
+            );
+
+        <span class="hljs-keyword">return</span> http.build();
+    }
+}</code></pre><pre><code class="hljs yaml"><span class="hljs-comment"># application.yml</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">client:</span>
+        <span class="hljs-attr">registration:</span>
+          <span class="hljs-attr">google:</span>
+            <span class="hljs-attr">client-id:</span> <span class="hljs-string">${GOOGLE_CLIENT_ID}</span>      <span class="hljs-comment"># use environment variables for secrets!</span>
+            <span class="hljs-attr">client-secret:</span> <span class="hljs-string">${GOOGLE_CLIENT_SECRET}</span>
+            <span class="hljs-attr">scope:</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">openid</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">profile</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">email</span></code></pre><pre><code class="hljs java"><span class="hljs-comment">// A controller that uses the logged-in user's information</span>
+<span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserController</span> {
+
+    <span class="hljs-comment">// Method 1: Get user info from @AuthenticationPrincipal annotation</span>
+    <span class="hljs-meta">@GetMapping("/me")</span>
+    <span class="hljs-keyword">public</span> Map&lt;String, Object&gt; <span class="hljs-title function_">currentUser</span><span class="hljs-params">(
+            <span class="hljs-meta">@AuthenticationPrincipal</span> OAuth2User principal)</span> {
+        <span class="hljs-comment">// OAuth2User.getAttributes() contains all claims from the UserInfo endpoint</span>
+        <span class="hljs-keyword">return</span> Map.of(
+            <span class="hljs-string">"name"</span>,  principal.getAttribute(<span class="hljs-string">"name"</span>),
+            <span class="hljs-string">"email"</span>, principal.getAttribute(<span class="hljs-string">"email"</span>)
+        );
+    }
+
+    <span class="hljs-comment">// Method 2: Get more details including OIDC ID Token claims</span>
+    <span class="hljs-meta">@GetMapping("/me/oidc")</span>
+    <span class="hljs-keyword">public</span> Map&lt;String, Object&gt; <span class="hljs-title function_">currentOidcUser</span><span class="hljs-params">(
+            <span class="hljs-meta">@AuthenticationPrincipal</span> OidcUser principal)</span> {
+        <span class="hljs-comment">// OidcUser extends OAuth2User with ID Token claims</span>
+        <span class="hljs-keyword">return</span> Map.of(
+            <span class="hljs-string">"name"</span>,    principal.getFullName(),
+            <span class="hljs-string">"email"</span>,   principal.getEmail(),
+            <span class="hljs-string">"subject"</span>, principal.getSubject(),  <span class="hljs-comment">// the "sub" claim (unique user ID)</span>
+            <span class="hljs-string">"issued"</span>,  principal.getIssuedAt()
+        );
+    }
+}</code></pre><hr>
+<h2>6. OAuth2 Client — Calling Protected APIs</h2>
+<p>Beyond just logging users in, the OAuth2 Client role handles a broader use case: making HTTP requests to protected third-party APIs using OAuth2 tokens. This is where your Spring app acts as a "client" that fetches data from another API on behalf of the user.</p>
+<h3>Understanding <code>OAuth2AuthorizedClient</code></h3>
+<p>An <code>OAuth2AuthorizedClient</code> is a Spring Security object that bundles together everything needed to make authorized API calls for a specific user to a specific provider:</p>
+<ul>
+<li>The <code>ClientRegistration</code> (provider details, client ID/secret)</li>
+<li>The <code>principalName</code> (which user this is for)</li>
+<li>The <code>OAuth2AccessToken</code> (the actual bearer token to send)</li>
+<li>Optionally, the <code>OAuth2RefreshToken</code></li>
+</ul>
+<p>Think of it as a "ready-to-use authorization package" for one user + one provider combination. Spring Security creates and manages these automatically when users log in.</p>
+<h3>Understanding <code>OAuth2AuthorizedClientManager</code></h3>
+<p>The <code>OAuth2AuthorizedClientManager</code> is the central coordinator for obtaining and managing <code>OAuth2AuthorizedClient</code> instances. When you want to make an API call, you ask the manager to give you an authorized client, and it handles all the complexity:</p>
+<ul>
+<li>If the user already has a valid token stored, it returns it immediately.</li>
+<li>If the token has expired, it uses the Refresh Token to get a new one automatically.</li>
+<li>If no token exists yet, it initiates the authorization flow.</li>
+</ul>
+<p>Spring Security automatically registers a default <code>OAuth2AuthorizedClientManager</code> bean for you when you include the client starter and have registrations configured. You rarely need to configure it manually.</p>
+<h3>Understanding <code>OAuth2AuthorizedClientProvider</code></h3>
+<p>An <code>OAuth2AuthorizedClientProvider</code> is a strategy for obtaining an access token using a specific grant type. There is one provider per grant type:</p>
+<ul>
+<li><code>AuthorizationCodeOAuth2AuthorizedClientProvider</code> — handles the authorization code flow</li>
+<li><code>ClientCredentialsOAuth2AuthorizedClientProvider</code> — handles the client credentials flow</li>
+<li><code>RefreshTokenOAuth2AuthorizedClientProvider</code> — handles token refresh</li>
+<li><code>JwtBearerOAuth2AuthorizedClientProvider</code> — handles the JWT Bearer grant (token exchange)</li>
+</ul>
+<p>The <code>OAuth2AuthorizedClientManager</code> uses these providers to get tokens. You can customize specific providers (e.g., adjust clock skew tolerance) by publishing a bean of the provider type.</p>
+<h3>Using RestClient with OAuth2</h3>
+<p>The cleanest way to make OAuth2-protected API calls is to configure a <code>RestClient</code> with the <code>OAuth2ClientHttpRequestInterceptor</code>. This interceptor automatically attaches the Bearer token to every outgoing request.</p>
+<pre><code class="hljs java"><span class="hljs-comment">// Configuration class — sets up a pre-authorized RestClient</span>
+<span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RestClientConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> RestClient <span class="hljs-title function_">oauthRestClient</span><span class="hljs-params">(OAuth2AuthorizedClientManager authorizedClientManager)</span> {
+        <span class="hljs-comment">// Create the interceptor that adds "Authorization: Bearer &lt;token&gt;" to requests</span>
+        <span class="hljs-type">OAuth2ClientHttpRequestInterceptor</span> <span class="hljs-variable">requestInterceptor</span> <span class="hljs-operator">=</span>
+                <span class="hljs-keyword">new</span> <span class="hljs-title class_">OAuth2ClientHttpRequestInterceptor</span>(authorizedClientManager);
+
+        <span class="hljs-keyword">return</span> RestClient.builder()
+                .requestInterceptor(requestInterceptor)
+                .build();
+    }
+}</code></pre><pre><code class="hljs java"><span class="hljs-comment">// Using the RestClient in a service or controller</span>
+<span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">GitHubService</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> RestClient restClient;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">GitHubService</span><span class="hljs-params">(RestClient restClient)</span> {
+        <span class="hljs-built_in">this</span>.restClient = restClient;
+    }
+
+    <span class="hljs-keyword">public</span> List&lt;Map&gt; <span class="hljs-title function_">getUserRepositories</span><span class="hljs-params">()</span> {
+        <span class="hljs-comment">// The clientRegistrationId("github") tells the interceptor WHICH</span>
+        <span class="hljs-comment">// registered client's token to use for this request.</span>
+        <span class="hljs-keyword">return</span> restClient.get()
+                .uri(<span class="hljs-string">"https://api.github.com/user/repos"</span>)
+                .attributes(clientRegistrationId(<span class="hljs-string">"github"</span>))  <span class="hljs-comment">// use the "github" registration</span>
+                .retrieve()
+                .body(List.class);
+    }
+}</code></pre><p>The import for <code>clientRegistrationId</code> is:</p>
+<pre><code class="hljs java"><span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;</code></pre><h3>Using WebClient with OAuth2 (for Reactive/Non-Blocking)</h3>
+<p>If you need non-blocking HTTP calls, use <code>WebClient</code> with the <code>ServletOAuth2AuthorizedClientExchangeFilterFunction</code>:</p>
+<pre><code class="hljs java"><span class="hljs-comment">// Add these dependencies in pom.xml first:</span>
+<span class="hljs-comment">// spring-webflux and reactor-netty</span>
+
+<span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WebClientConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> WebClient <span class="hljs-title function_">oauthWebClient</span><span class="hljs-params">(OAuth2AuthorizedClientManager authorizedClientManager)</span> {
+        <span class="hljs-comment">// Create the filter function that handles token injection</span>
+        <span class="hljs-type">ServletOAuth2AuthorizedClientExchangeFilterFunction</span> <span class="hljs-variable">filter</span> <span class="hljs-operator">=</span>
+                <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServletOAuth2AuthorizedClientExchangeFilterFunction</span>(authorizedClientManager);
+
+        <span class="hljs-keyword">return</span> WebClient.builder()
+                .apply(filter.oauth2Configuration()) <span class="hljs-comment">// apply the OAuth2 filter</span>
+                .build();
+    }
+}</code></pre><pre><code class="hljs java"><span class="hljs-comment">// Using the WebClient</span>
+<span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">GitHubWebClientService</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> WebClient webClient;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">GitHubWebClientService</span><span class="hljs-params">(WebClient webClient)</span> {
+        <span class="hljs-built_in">this</span>.webClient = webClient;
+    }
+
+    <span class="hljs-keyword">public</span> Mono&lt;List&lt;Map&gt;&gt; <span class="hljs-title function_">getUserRepositories</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> webClient.get()
+                .uri(<span class="hljs-string">"https://api.github.com/user/repos"</span>)
+                .attributes(clientRegistrationId(<span class="hljs-string">"github"</span>))
+                .retrieve()
+                .bodyToFlux(Map.class)
+                .collectList();
+    }
+}</code></pre><h3>Client Credentials Grant — No User Involved (Machine-to-Machine)</h3>
+<p>The Client Credentials grant is used when your application needs to call another API as itself — not on behalf of any user. This is common in microservice architectures where Service A calls Service B directly.</p>
+<pre><code class="hljs yaml"><span class="hljs-comment"># application.yml</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">client:</span>
+        <span class="hljs-attr">registration:</span>
+          <span class="hljs-comment"># This registration uses client_credentials, not authorization_code</span>
+          <span class="hljs-attr">my-service-client:</span>
+            <span class="hljs-attr">provider:</span> <span class="hljs-string">my-auth-server</span>
+            <span class="hljs-attr">client-id:</span> <span class="hljs-string">my-service-client-id</span>
+            <span class="hljs-attr">client-secret:</span> <span class="hljs-string">my-service-secret</span>
+            <span class="hljs-attr">authorization-grant-type:</span> <span class="hljs-string">client_credentials</span>   <span class="hljs-comment"># key difference!</span>
+            <span class="hljs-attr">scope:</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">api.read</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">api.write</span>
+        
+        <span class="hljs-attr">provider:</span>
+          <span class="hljs-attr">my-auth-server:</span>
+            <span class="hljs-attr">issuer-uri:</span> <span class="hljs-string">https://auth.mycompany.com</span></code></pre><pre><code class="hljs java"><span class="hljs-comment">// For client credentials, we scope the token to the application, not to a user.</span>
+<span class="hljs-comment">// We use RequestAttributePrincipalResolver to provide a fixed principal name.</span>
+
+<span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ServiceRestClientConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> RestClient <span class="hljs-title function_">serviceRestClient</span><span class="hljs-params">(OAuth2AuthorizedClientManager authorizedClientManager)</span> {
+        <span class="hljs-type">OAuth2ClientHttpRequestInterceptor</span> <span class="hljs-variable">requestInterceptor</span> <span class="hljs-operator">=</span>
+                <span class="hljs-keyword">new</span> <span class="hljs-title class_">OAuth2ClientHttpRequestInterceptor</span>(authorizedClientManager);
+
+        <span class="hljs-comment">// RequestAttributePrincipalResolver allows us to specify a principal name</span>
+        <span class="hljs-comment">// per request, so the token is scoped to the application, not a user.</span>
+        requestInterceptor.setPrincipalResolver(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RequestAttributePrincipalResolver</span>());
+
+        <span class="hljs-keyword">return</span> RestClient.builder()
+                .requestInterceptor(requestInterceptor)
+                .build();
+    }
+}</code></pre><pre><code class="hljs java"><span class="hljs-comment">// Using the service client</span>
+<span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderService</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> RestClient restClient;
+
+    <span class="hljs-meta">@GetMapping("/orders")</span>
+    <span class="hljs-keyword">public</span> List&lt;Order&gt; <span class="hljs-title function_">fetchOrders</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> restClient.get()
+                .uri(<span class="hljs-string">"https://orders-api.internal/orders"</span>)
+                .attributes(clientRegistrationId(<span class="hljs-string">"my-service-client"</span>))
+                <span class="hljs-comment">// "my-application" is the principal name for the application token</span>
+                .attributes(principal(<span class="hljs-string">"my-application"</span>))
+                .retrieve()
+                .body(List.class);
+    }
+}</code></pre><hr>
+<h2>7. OAuth2 Resource Server — Protecting Your API</h2>
+<p>The Resource Server role is what you implement when you build a REST API that should only be accessible to callers who present a valid Bearer token. This is the most common setup in microservice architectures.</p>
+<p>Your API doesn't handle login — it just checks the token. The token was issued by a separate Authorization Server (Google, Okta, Keycloak, or your own).</p>
+<h3>JWT Token Validation</h3>
+<p>JWT (JSON Web Token) is the most common token format. A JWT is self-contained — it carries claims (data) inside it and is cryptographically signed. The Resource Server can validate it without calling the Authorization Server.</p>
+<p>The minimum configuration to protect your API with JWT validation:</p>
+<pre><code class="hljs yaml"><span class="hljs-comment"># application.yml</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">resourceserver:</span>
+        <span class="hljs-attr">jwt:</span>
+          <span class="hljs-comment"># Spring Security fetches the public key from this URL automatically</span>
+          <span class="hljs-comment"># by appending /.well-known/openid-configuration or /oauth2/jwks</span>
+          <span class="hljs-attr">issuer-uri:</span> <span class="hljs-string">https://your-auth-server.com</span></code></pre><pre><code class="hljs java"><span class="hljs-comment">// The equivalent Java configuration</span>
+<span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableWebSecurity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ResourceServerConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">securityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+        http
+            .authorizeHttpRequests(auth -&gt; auth
+                <span class="hljs-comment">// Public endpoints — no token required</span>
+                .requestMatchers(<span class="hljs-string">"/actuator/health"</span>, <span class="hljs-string">"/api/public/**"</span>).permitAll()
+                <span class="hljs-comment">// Everything else requires a valid JWT</span>
+                .anyRequest().authenticated()
+            )
+            <span class="hljs-comment">// Configure this app as a Resource Server that validates JWTs</span>
+            .oauth2ResourceServer(oauth2 -&gt; oauth2
+                .jwt(Customizer.withDefaults()) <span class="hljs-comment">// use defaults — auto-detects JwtDecoder bean</span>
+            );
+
+        <span class="hljs-keyword">return</span> http.build();
+    }
+
+    <span class="hljs-comment">// JwtDecoder is the component that validates and decodes incoming JWTs.</span>
+    <span class="hljs-comment">// Spring Boot creates this automatically from the issuer-uri property,</span>
+    <span class="hljs-comment">// but you can define it manually for more control.</span>
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> JwtDecoder <span class="hljs-title function_">jwtDecoder</span><span class="hljs-params">()</span> {
+        <span class="hljs-comment">// This fetches the JWKS (public keys) from the auth server and</span>
+        <span class="hljs-comment">// uses them to verify JWT signatures. It also validates:</span>
+        <span class="hljs-comment">// - The token hasn't expired (exp claim)</span>
+        <span class="hljs-comment">// - The issuer matches (iss claim)</span>
+        <span class="hljs-comment">// - The audience matches (aud claim) if configured</span>
+        <span class="hljs-keyword">return</span> JwtDecoders.fromIssuerLocation(<span class="hljs-string">"https://your-auth-server.com"</span>);
+    }
+}</code></pre><h3>JwtDecoder Explained</h3>
+<p><code>JwtDecoder</code> is the interface whose job is to take a raw JWT string and produce a validated <code>Jwt</code> object. Spring Security provides <code>NimbusJwtDecoder</code> as the implementation (using the Nimbus JOSE library internally).</p>
+<p>When a request comes in with <code>Authorization: Bearer eyJhbGci...</code>, the <code>BearerTokenAuthenticationFilter</code> extracts the token string and passes it to the <code>JwtDecoder</code>. The decoder:</p>
+<ol>
+<li>Decodes the base64-encoded header and payload.</li>
+<li>Fetches the JSON Web Key Set (JWKS) from the Authorization Server's public key endpoint.</li>
+<li>Verifies the JWT signature using the matching public key.</li>
+<li>Validates the <code>exp</code> (expiry), <code>iss</code> (issuer), and optionally <code>aud</code> (audience) claims.</li>
+<li>Returns a <code>Jwt</code> object containing all the claims, or throws a <code>JwtException</code> if anything is invalid.</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-comment">// Manual JwtDecoder configuration — for when you need fine-grained control</span>
+<span class="hljs-meta">@Bean</span>
+<span class="hljs-keyword">public</span> JwtDecoder <span class="hljs-title function_">jwtDecoder</span><span class="hljs-params">()</span> {
+    <span class="hljs-type">NimbusJwtDecoder</span> <span class="hljs-variable">decoder</span> <span class="hljs-operator">=</span> NimbusJwtDecoder
+            .withJwkSetUri(<span class="hljs-string">"https://your-auth-server.com/oauth2/jwks"</span>) <span class="hljs-comment">// public keys URL</span>
+            .build();
+
+    <span class="hljs-comment">// Add additional validators on top of the defaults</span>
+    <span class="hljs-comment">// Default validators check: expiry, not-before, issuer</span>
+    OAuth2TokenValidator&lt;Jwt&gt; audienceValidator = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AudienceValidator</span>(<span class="hljs-string">"my-api"</span>);
+    OAuth2TokenValidator&lt;Jwt&gt; withAudience = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DelegatingOAuth2TokenValidator</span>&lt;&gt;(
+            JwtValidators.createDefaultWithIssuer(<span class="hljs-string">"https://your-auth-server.com"</span>),
+            audienceValidator
+    );
+
+    decoder.setJwtValidator(withAudience);
+    <span class="hljs-keyword">return</span> decoder;
+}
+
+<span class="hljs-comment">// Custom audience validator</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">AudienceValidator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">OAuth2TokenValidator</span>&lt;Jwt&gt; {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String audience;
+
+    AudienceValidator(String audience) {
+        <span class="hljs-built_in">this</span>.audience = audience;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> OAuth2TokenValidatorResult <span class="hljs-title function_">validate</span><span class="hljs-params">(Jwt jwt)</span> {
+        List&lt;String&gt; audiences = jwt.getAudience();
+        <span class="hljs-keyword">if</span> (audiences.contains(<span class="hljs-built_in">this</span>.audience)) {
+            <span class="hljs-keyword">return</span> OAuth2TokenValidatorResult.success();
+        }
+        <span class="hljs-type">OAuth2Error</span> <span class="hljs-variable">error</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">OAuth2Error</span>(<span class="hljs-string">"invalid_token"</span>, <span class="hljs-string">"Required audience not found"</span>, <span class="hljs-literal">null</span>);
+        <span class="hljs-keyword">return</span> OAuth2TokenValidatorResult.failure(error);
+    }
+}</code></pre><h3>Opaque Token Introspection</h3>
+<p>Opaque tokens are tokens whose content is not directly readable — unlike JWTs, you cannot decode them to see the claims. To validate an opaque token, your Resource Server must call the Authorization Server's introspection endpoint and ask "is this token valid, and what does it represent?"</p>
+<pre><code class="hljs yaml"><span class="hljs-comment"># application.yml</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">resourceserver:</span>
+        <span class="hljs-attr">opaquetoken:</span>
+          <span class="hljs-comment"># The Authorization Server's introspection endpoint</span>
+          <span class="hljs-attr">introspection-uri:</span> <span class="hljs-string">https://your-auth-server.com/oauth2/introspect</span>
+          <span class="hljs-comment"># Credentials your Resource Server uses to authenticate itself</span>
+          <span class="hljs-comment"># when calling the introspection endpoint</span>
+          <span class="hljs-attr">client-id:</span> <span class="hljs-string">my-resource-server</span>
+          <span class="hljs-attr">client-secret:</span> <span class="hljs-string">my-resource-server-secret</span></code></pre><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableWebSecurity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OpaqueTokenResourceServerConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">securityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+        http
+            .authorizeHttpRequests(auth -&gt; auth.anyRequest().authenticated())
+            .oauth2ResourceServer(oauth2 -&gt; oauth2
+                .opaqueToken(Customizer.withDefaults()) <span class="hljs-comment">// use OpaqueTokenIntrospector bean</span>
+            );
+        <span class="hljs-keyword">return</span> http.build();
+    }
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> OpaqueTokenIntrospector <span class="hljs-title function_">introspector</span><span class="hljs-params">()</span> {
+        <span class="hljs-comment">// For every incoming request, this will call the introspection endpoint</span>
+        <span class="hljs-comment">// to validate the token and get its metadata.</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SpringOpaqueTokenIntrospector</span>(
+            <span class="hljs-string">"https://your-auth-server.com/oauth2/introspect"</span>,
+            <span class="hljs-string">"my-resource-server"</span>,
+            <span class="hljs-string">"my-resource-server-secret"</span>
+        );
+    }
+}</code></pre><p>The main trade-off: JWTs are faster (no network call needed for validation) but opaque tokens allow the Authorization Server to instantly revoke them (because every request checks in with the auth server). For high-security use cases, opaque tokens with introspection give you stronger revocation guarantees.</p>
+<h3>Customizing Authorities from JWT Claims</h3>
+<p>By default, Spring Security maps the JWT's <code>scope</code> claim (e.g., <code>"message.read message.write"</code>) to Spring Security authorities with the prefix <code>SCOPE_</code> (e.g., <code>SCOPE_message.read</code>). You can customize this mapping.</p>
+<pre><code class="hljs java"><span class="hljs-comment">// Custom JwtAuthenticationConverter — tells Spring Security how to</span>
+<span class="hljs-comment">// extract roles/authorities from the JWT claims.</span>
+<span class="hljs-meta">@Bean</span>
+<span class="hljs-keyword">public</span> JwtAuthenticationConverter <span class="hljs-title function_">jwtAuthenticationConverter</span><span class="hljs-params">()</span> {
+    <span class="hljs-type">JwtGrantedAuthoritiesConverter</span> <span class="hljs-variable">grantedAuthoritiesConverter</span> <span class="hljs-operator">=</span>
+            <span class="hljs-keyword">new</span> <span class="hljs-title class_">JwtGrantedAuthoritiesConverter</span>();
+
+    <span class="hljs-comment">// By default, Spring looks in the "scope" or "scp" claim.</span>
+    <span class="hljs-comment">// Change this to look in "roles" claim instead:</span>
+    grantedAuthoritiesConverter.setAuthoritiesClaimName(<span class="hljs-string">"roles"</span>);
+
+    <span class="hljs-comment">// By default, authorities get a "SCOPE_" prefix.</span>
+    <span class="hljs-comment">// Change this to "ROLE_" so @PreAuthorize("hasRole('admin')") works:</span>
+    grantedAuthoritiesConverter.setAuthorityPrefix(<span class="hljs-string">"ROLE_"</span>);
+
+    <span class="hljs-type">JwtAuthenticationConverter</span> <span class="hljs-variable">jwtAuthenticationConverter</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">JwtAuthenticationConverter</span>();
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+    <span class="hljs-keyword">return</span> jwtAuthenticationConverter;
+}</code></pre><p>Then wire it into your resource server configuration:</p>
+<pre><code class="hljs java">.oauth2ResourceServer(oauth2 -&gt; oauth2
+    .jwt(jwt -&gt; jwt
+        .jwtAuthenticationConverter(jwtAuthenticationConverter())
+    )
+)</code></pre><h3>Accessing JWT Claims in Controllers</h3>
+<p>Once a request passes JWT validation, the decoded token is available in your controllers:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@RequestMapping("/api")</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ApiController</span> {
+
+    <span class="hljs-comment">// Method 1: Via @AuthenticationPrincipal — cleanest approach</span>
+    <span class="hljs-meta">@GetMapping("/messages")</span>
+    <span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">getMessages</span><span class="hljs-params">(
+            <span class="hljs-meta">@AuthenticationPrincipal</span> Jwt jwt)</span> {
+        <span class="hljs-comment">// jwt.getClaims() returns all claims as a Map</span>
+        <span class="hljs-type">String</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> jwt.getSubject();         <span class="hljs-comment">// the "sub" claim</span>
+        List&lt;String&gt; scopes = jwt.getClaimAsStringList(<span class="hljs-string">"scope"</span>);
+        <span class="hljs-type">String</span> <span class="hljs-variable">issuer</span> <span class="hljs-operator">=</span> jwt.getIssuer().toString();
+
+        System.out.println(<span class="hljs-string">"Request from user: "</span> + userId);
+        <span class="hljs-keyword">return</span> List.of(<span class="hljs-string">"Hello, "</span> + userId);
+    }
+
+    <span class="hljs-comment">// Method 2: Via SecurityContextHolder</span>
+    <span class="hljs-meta">@GetMapping("/admin")</span>
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">adminOnly</span><span class="hljs-params">()</span> {
+        <span class="hljs-type">JwtAuthenticationToken</span> <span class="hljs-variable">auth</span> <span class="hljs-operator">=</span> (JwtAuthenticationToken)
+                SecurityContextHolder.getContext().getAuthentication();
+        <span class="hljs-type">Jwt</span> <span class="hljs-variable">jwt</span> <span class="hljs-operator">=</span> auth.getToken();
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"Admin area. Your subject: "</span> + jwt.getSubject();
+    }
+}</code></pre><h3>Protecting Specific Endpoints with Scopes</h3>
+<pre><code class="hljs java"><span class="hljs-meta">@Bean</span>
+<span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">securityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+    http
+        .authorizeHttpRequests(auth -&gt; auth
+            <span class="hljs-comment">// Only requests with the "message.read" scope can access GET /messages</span>
+            .requestMatchers(HttpMethod.GET, <span class="hljs-string">"/api/messages"</span>)
+                .hasAuthority(<span class="hljs-string">"SCOPE_message.read"</span>)
+            <span class="hljs-comment">// Only requests with "message.write" scope can POST</span>
+            .requestMatchers(HttpMethod.POST, <span class="hljs-string">"/api/messages"</span>)
+                .hasAuthority(<span class="hljs-string">"SCOPE_message.write"</span>)
+            <span class="hljs-comment">// Admin endpoints require admin scope</span>
+            .requestMatchers(<span class="hljs-string">"/api/admin/**"</span>)
+                .hasAuthority(<span class="hljs-string">"SCOPE_admin"</span>)
+            .anyRequest().authenticated()
+        )
+        .oauth2ResourceServer(oauth2 -&gt; oauth2.jwt(Customizer.withDefaults()));
+    <span class="hljs-keyword">return</span> http.build();
+}</code></pre><hr>
+<h2>8. OAuth2 Authorization Server — Being the Auth Server</h2>
+<p>The Authorization Server role means your Spring Boot application itself issues OAuth2 tokens, handles user login, shows consent screens, and manages client registrations. This is handled by the <strong>Spring Authorization Server</strong> — a dedicated project that builds on Spring Security.</p>
+<h3>Minimal Authorization Server Setup</h3>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-oauth2-authorization-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableWebSecurity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AuthServerConfig</span> {
+
+    <span class="hljs-comment">// Security chain for the Authorization Server's protocol endpoints</span>
+    <span class="hljs-comment">// (token endpoint, authorization endpoint, etc.)</span>
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-meta">@Order(1)</span> <span class="hljs-comment">// Higher priority than the default security chain</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">authorizationServerSecurityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span>
+            <span class="hljs-keyword">throws</span> Exception {
+        <span class="hljs-comment">// Apply default Auth Server security settings</span>
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+
+        http
+            <span class="hljs-comment">// Enable OpenID Connect 1.0 (for ID tokens and userinfo endpoint)</span>
+            .getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+            .oidc(Customizer.withDefaults());
+
+        http
+            <span class="hljs-comment">// If someone hits a protected auth server endpoint without being logged in,</span>
+            <span class="hljs-comment">// redirect them to the login page (handled by the second security chain)</span>
+            .exceptionHandling(exceptions -&gt; exceptions
+                .defaultAuthenticationEntryPointFor(
+                    <span class="hljs-keyword">new</span> <span class="hljs-title class_">LoginUrlAuthenticationEntryPoint</span>(<span class="hljs-string">"/login"</span>),
+                    <span class="hljs-keyword">new</span> <span class="hljs-title class_">MediaTypeRequestMatcher</span>(MediaType.TEXT_HTML)
+                )
+            );
+
+        <span class="hljs-keyword">return</span> http.build();
+    }
+
+    <span class="hljs-comment">// Security chain for the rest of the app (login form, etc.)</span>
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-meta">@Order(2)</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">defaultSecurityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span>
+            <span class="hljs-keyword">throws</span> Exception {
+        http
+            .authorizeHttpRequests(auth -&gt; auth.anyRequest().authenticated())
+            .formLogin(Customizer.withDefaults()); <span class="hljs-comment">// show a standard login form</span>
+        <span class="hljs-keyword">return</span> http.build();
+    }
+
+    <span class="hljs-comment">// Define which clients are allowed to request tokens from this server.</span>
+    <span class="hljs-comment">// In production, this would come from a database.</span>
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> RegisteredClientRepository <span class="hljs-title function_">registeredClientRepository</span><span class="hljs-params">()</span> {
+        <span class="hljs-type">RegisteredClient</span> <span class="hljs-variable">myClient</span> <span class="hljs-operator">=</span> RegisteredClient.withId(UUID.randomUUID().toString())
+            .clientId(<span class="hljs-string">"my-client-app"</span>)
+            .clientSecret(<span class="hljs-string">"{noop}my-client-secret"</span>)  <span class="hljs-comment">// {noop} means no encoding (dev only!)</span>
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            .redirectUri(<span class="hljs-string">"http://localhost:3000/callback"</span>)
+            .scope(OidcScopes.OPENID)
+            .scope(OidcScopes.PROFILE)
+            .scope(<span class="hljs-string">"message.read"</span>)
+            .scope(<span class="hljs-string">"message.write"</span>)
+            .clientSettings(ClientSettings.builder()
+                .requireAuthorizationConsent(<span class="hljs-literal">true</span>) <span class="hljs-comment">// show consent screen</span>
+                .build())
+            .build();
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InMemoryRegisteredClientRepository</span>(myClient);
+    }
+
+    <span class="hljs-comment">// This key pair is used to sign the JWTs (Access Tokens and ID Tokens)</span>
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> JWKSource&lt;SecurityContext&gt; <span class="hljs-title function_">jwkSource</span><span class="hljs-params">()</span> {
+        <span class="hljs-type">KeyPair</span> <span class="hljs-variable">keyPair</span> <span class="hljs-operator">=</span> generateRsaKey();
+        <span class="hljs-type">RSAPublicKey</span> <span class="hljs-variable">publicKey</span>  <span class="hljs-operator">=</span> (RSAPublicKey)  keyPair.getPublic();
+        <span class="hljs-type">RSAPrivateKey</span> <span class="hljs-variable">privateKey</span> <span class="hljs-operator">=</span> (RSAPrivateKey) keyPair.getPrivate();
+
+        <span class="hljs-type">RSAKey</span> <span class="hljs-variable">rsaKey</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RSAKey</span>.Builder(publicKey)
+            .privateKey(privateKey)
+            .keyID(UUID.randomUUID().toString())
+            .build();
+
+        <span class="hljs-type">JWKSet</span> <span class="hljs-variable">jwkSet</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">JWKSet</span>(rsaKey);
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImmutableJWKSet</span>&lt;&gt;(jwkSet);
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> KeyPair <span class="hljs-title function_">generateRsaKey</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-type">KeyPairGenerator</span> <span class="hljs-variable">keyPairGenerator</span> <span class="hljs-operator">=</span> KeyPairGenerator.getInstance(<span class="hljs-string">"RSA"</span>);
+            keyPairGenerator.initialize(<span class="hljs-number">2048</span>); <span class="hljs-comment">// 2048-bit RSA key</span>
+            <span class="hljs-keyword">return</span> keyPairGenerator.generateKeyPair();
+        } <span class="hljs-keyword">catch</span> (NoSuchAlgorithmException ex) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(ex);
+        }
+    }
+
+    <span class="hljs-comment">// AuthorizationServerSettings defines your server's public-facing URLs.</span>
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> AuthorizationServerSettings <span class="hljs-title function_">authorizationServerSettings</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> AuthorizationServerSettings.builder()
+            .issuer(<span class="hljs-string">"https://my-auth-server.com"</span>) <span class="hljs-comment">// your auth server's URL</span>
+            .build();
+    }
+}</code></pre><p>This minimal setup gives you a fully functional OAuth2 Authorization Server with the following auto-configured endpoints:</p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Authorization</td>
+<td><code>/oauth2/authorize</code></td>
+<td>Where users log in and give consent</td>
+</tr>
+<tr>
+<td>Token</td>
+<td><code>/oauth2/token</code></td>
+<td>Where clients exchange codes for tokens</td>
+</tr>
+<tr>
+<td>JWKS</td>
+<td><code>/oauth2/jwks</code></td>
+<td>Public keys for JWT verification</td>
+</tr>
+<tr>
+<td>Token Revocation</td>
+<td><code>/oauth2/revoke</code></td>
+<td>Revoke an access or refresh token</td>
+</tr>
+<tr>
+<td>Token Introspection</td>
+<td><code>/oauth2/introspect</code></td>
+<td>Check if a token is valid</td>
+</tr>
+<tr>
+<td>OIDC Discovery</td>
+<td><code>/.well-known/openid-configuration</code></td>
+<td>Provider metadata document</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>9. All Configuration Properties Explained</h2>
+<p>Here is a complete reference of every significant Spring Security OAuth2 configuration property.</p>
+<h3>OAuth2 Client Properties</h3>
+<pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">client:</span>
+        <span class="hljs-attr">registration:</span>
+          {<span class="hljs-string">registrationId</span>}<span class="hljs-string">:</span>       <span class="hljs-comment"># you name this — e.g., "google", "github", "my-server"</span>
+            
+            <span class="hljs-comment"># REQUIRED: Credentials from your OAuth2 provider</span>
+            <span class="hljs-attr">client-id:</span> <span class="hljs-string">your-client-id</span>
+            <span class="hljs-attr">client-secret:</span> <span class="hljs-string">your-client-secret</span>
+            
+            <span class="hljs-comment"># The grant type (flow) to use</span>
+            <span class="hljs-comment"># Options: authorization_code, client_credentials, password, refresh_token</span>
+            <span class="hljs-attr">authorization-grant-type:</span> <span class="hljs-string">authorization_code</span>
+            
+            <span class="hljs-comment"># Points to a key in the "provider" section below.</span>
+            <span class="hljs-comment"># For well-known providers (google, github, okta, facebook),</span>
+            <span class="hljs-comment"># you can skip this — Spring Boot knows the endpoints already.</span>
+            <span class="hljs-attr">provider:</span> <span class="hljs-string">my-provider</span>
+            
+            <span class="hljs-comment"># The scopes to request. "openid" triggers OIDC mode.</span>
+            <span class="hljs-attr">scope:</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">openid</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">profile</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">email</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">my-custom-scope</span>
+            
+            <span class="hljs-comment"># The URL your auth server redirects to after user login.</span>
+            <span class="hljs-comment"># Default: {baseUrl}/login/oauth2/code/{registrationId}</span>
+            <span class="hljs-comment"># You can use {baseUrl} and {registrationId} as placeholders.</span>
+            <span class="hljs-attr">redirect-uri:</span> <span class="hljs-string">"{baseUrl}/login/oauth2/code/{registrationId}"</span>
+            
+            <span class="hljs-comment"># Display name used in the auto-generated login page</span>
+            <span class="hljs-attr">client-name:</span> <span class="hljs-string">My</span> <span class="hljs-string">OAuth</span> <span class="hljs-string">Provider</span>
+            
+            <span class="hljs-comment"># How the client authenticates itself to the token endpoint.</span>
+            <span class="hljs-comment"># Options: client_secret_basic (HTTP Basic), client_secret_post, none, private_key_jwt</span>
+            <span class="hljs-attr">client-authentication-method:</span> <span class="hljs-string">client_secret_basic</span>
+        
+        <span class="hljs-attr">provider:</span>
+          <span class="hljs-attr">my-provider:</span>
+            <span class="hljs-comment"># If the provider supports OpenID Connect discovery,</span>
+            <span class="hljs-comment"># just provide the issuer URI — all other URIs are auto-discovered.</span>
+            <span class="hljs-attr">issuer-uri:</span> <span class="hljs-string">https://my-auth-server.com</span>
+            
+            <span class="hljs-comment"># OR specify each endpoint manually:</span>
+            <span class="hljs-attr">authorization-uri:</span> <span class="hljs-string">https://my-auth-server.com/oauth2/authorize</span>
+            <span class="hljs-attr">token-uri:</span> <span class="hljs-string">https://my-auth-server.com/oauth2/token</span>
+            <span class="hljs-attr">user-info-uri:</span> <span class="hljs-string">https://my-auth-server.com/userinfo</span>
+            <span class="hljs-attr">jwk-set-uri:</span> <span class="hljs-string">https://my-auth-server.com/oauth2/jwks</span>
+            
+            <span class="hljs-comment"># The claim in the UserInfo response that contains the unique user ID</span>
+            <span class="hljs-attr">user-name-attribute:</span> <span class="hljs-string">sub</span></code></pre><h3>OAuth2 Resource Server Properties</h3>
+<pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">resourceserver:</span>
+        
+        <span class="hljs-comment"># === JWT Mode ===</span>
+        <span class="hljs-attr">jwt:</span>
+          <span class="hljs-comment"># Auto-discovers JWKS URI and validates issuer from this URL</span>
+          <span class="hljs-attr">issuer-uri:</span> <span class="hljs-string">https://my-auth-server.com</span>
+          
+          <span class="hljs-comment"># OR: Specify JWKS URI directly (where public keys are published)</span>
+          <span class="hljs-attr">jwk-set-uri:</span> <span class="hljs-string">https://my-auth-server.com/oauth2/jwks</span>
+          
+          <span class="hljs-comment"># OR: For simple cases (custom JWT with local key),</span>
+          <span class="hljs-comment"># provide a public key file on the classpath</span>
+          <span class="hljs-attr">public-key-location:</span> <span class="hljs-string">classpath:public.pem</span>
+          
+          <span class="hljs-comment"># The expected audience value in the JWT's "aud" claim.</span>
+          <span class="hljs-comment"># If specified, tokens without this audience are rejected.</span>
+          <span class="hljs-attr">audiences:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">my-api-service</span>
+        
+        <span class="hljs-comment"># === Opaque Token Mode ===</span>
+        <span class="hljs-attr">opaquetoken:</span>
+          <span class="hljs-comment"># The auth server's introspection endpoint</span>
+          <span class="hljs-attr">introspection-uri:</span> <span class="hljs-string">https://my-auth-server.com/oauth2/introspect</span>
+          <span class="hljs-comment"># Credentials your resource server uses when calling the introspection endpoint</span>
+          <span class="hljs-attr">client-id:</span> <span class="hljs-string">my-resource-server-id</span>
+          <span class="hljs-attr">client-secret:</span> <span class="hljs-string">my-resource-server-secret</span></code></pre><hr>
+<h2>10. JWT Deep Dive in Spring Security</h2>
+<p>Understanding how Spring Security handles JWTs will help you debug authentication errors and customize token processing.</p>
+<h3>The JWT Validation Pipeline</h3>
+<p>When a request arrives with <code>Authorization: Bearer &lt;token&gt;</code>, here's what Spring Security does internally:</p>
+<pre><code class="hljs plaintext">Request arrives
+    ↓
+BearerTokenAuthenticationFilter
+    → Extracts the token string from the Authorization header
+    ↓
+JwtDecoder.decode(tokenString)
+    → Decodes the base64 header and payload
+    → Fetches JWKS (public keys) from the auth server (cached)
+    → Verifies the signature
+    → Validates: exp (not expired), iss (correct issuer), nbf (not before), aud (audience)
+    → Returns a Jwt object, or throws JwtException
+    ↓
+JwtAuthenticationConverter.convert(jwt)
+    → Extracts authorities from the "scope" or "scp" claim
+    → Creates JwtAuthenticationToken(jwt, authorities)
+    ↓
+SecurityContext.setAuthentication(token)
+    → The request is now authenticated
+    ↓
+AuthorizationFilter
+    → Checks if this user has permission to access the requested URL</code></pre><h3>What's Inside a JWT — The <code>Jwt</code> Object</h3>
+<p>After decoding, you get a <code>Jwt</code> object with convenient accessor methods:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@GetMapping("/example")</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">example</span><span class="hljs-params">(<span class="hljs-meta">@AuthenticationPrincipal</span> Jwt jwt)</span> {
+    <span class="hljs-comment">// Standard registered claims</span>
+    <span class="hljs-type">String</span> <span class="hljs-variable">subject</span>       <span class="hljs-operator">=</span> jwt.getSubject();              <span class="hljs-comment">// "sub" — user's unique ID</span>
+    <span class="hljs-type">String</span> <span class="hljs-variable">issuer</span>        <span class="hljs-operator">=</span> jwt.getIssuer().toString();    <span class="hljs-comment">// "iss" — who issued this token</span>
+    <span class="hljs-type">Instant</span> <span class="hljs-variable">issuedAt</span>     <span class="hljs-operator">=</span> jwt.getIssuedAt();             <span class="hljs-comment">// "iat" — when issued</span>
+    <span class="hljs-type">Instant</span> <span class="hljs-variable">expiresAt</span>    <span class="hljs-operator">=</span> jwt.getExpiresAt();            <span class="hljs-comment">// "exp" — when it expires</span>
+    List&lt;String&gt; audience = jwt.getAudience();            <span class="hljs-comment">// "aud" — intended recipients</span>
+    <span class="hljs-type">String</span> <span class="hljs-variable">jwtId</span>         <span class="hljs-operator">=</span> jwt.getId();                   <span class="hljs-comment">// "jti" — unique token ID</span>
+
+    <span class="hljs-comment">// Custom claims (whatever your auth server puts in)</span>
+    <span class="hljs-type">String</span> <span class="hljs-variable">email</span>         <span class="hljs-operator">=</span> jwt.getClaimAsString(<span class="hljs-string">"email"</span>);
+    List&lt;String&gt; roles   = jwt.getClaimAsStringList(<span class="hljs-string">"roles"</span>);
+    <span class="hljs-type">Boolean</span> <span class="hljs-variable">emailVerified</span> <span class="hljs-operator">=</span> jwt.getClaimAsBoolean(<span class="hljs-string">"email_verified"</span>);
+    Map&lt;String, Object&gt; address = jwt.getClaimAsMap(<span class="hljs-string">"address"</span>);
+
+    <span class="hljs-comment">// Raw access to all claims</span>
+    Map&lt;String, Object&gt; allClaims = jwt.getClaims();
+}</code></pre><h3>Using a Local Public Key (for Custom JWT Issuers)</h3>
+<p>When you issue your own JWTs (without a full authorization server), you can configure the Resource Server to validate them using a local RSA public key:</p>
+<pre><code class="hljs bash"><span class="hljs-comment"># Generate RSA key pair (run in terminal)</span>
+openssl genrsa -out private.pem 2048
+openssl rsa -<span class="hljs-keyword">in</span> private.pem -pubout -out public.pem</code></pre><pre><code class="hljs yaml"><span class="hljs-comment"># application.yml for the Resource Server</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">resourceserver:</span>
+        <span class="hljs-attr">jwt:</span>
+          <span class="hljs-attr">public-key-location:</span> <span class="hljs-string">classpath:public.pem</span>  <span class="hljs-comment"># place in src/main/resources</span></code></pre><pre><code class="hljs java"><span class="hljs-comment">// How to create/sign JWTs (for the issuer side):</span>
+<span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JwtIssuerService</span> {
+
+    <span class="hljs-comment">// In the issuer app, load the PRIVATE key to sign tokens</span>
+    <span class="hljs-meta">@Value("classpath:private.pem")</span>
+    <span class="hljs-keyword">private</span> RSAPrivateKey privateKey;
+
+    <span class="hljs-meta">@Value("classpath:public.pem")</span>
+    <span class="hljs-keyword">private</span> RSAPublicKey publicKey;
+
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">issueToken</span><span class="hljs-params">(String subject, List&lt;String&gt; scopes)</span> {
+        JWKSource&lt;SecurityContext&gt; jwkSource = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImmutableJWKSet</span>&lt;&gt;(
+            <span class="hljs-keyword">new</span> <span class="hljs-title class_">JWKSet</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RSAKey</span>.Builder(publicKey).privateKey(privateKey).build())
+        );
+        <span class="hljs-type">JwtEncoder</span> <span class="hljs-variable">encoder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NimbusJwtEncoder</span>(jwkSource);
+
+        <span class="hljs-type">JwtClaimsSet</span> <span class="hljs-variable">claims</span> <span class="hljs-operator">=</span> JwtClaimsSet.builder()
+            .issuer(<span class="hljs-string">"https://my-app.com"</span>)
+            .subject(subject)
+            .issuedAt(Instant.now())
+            .expiresAt(Instant.now().plus(<span class="hljs-number">1</span>, ChronoUnit.HOURS))
+            .claim(<span class="hljs-string">"scope"</span>, String.join(<span class="hljs-string">" "</span>, scopes))
+            .build();
+
+        <span class="hljs-type">JwsHeader</span> <span class="hljs-variable">header</span> <span class="hljs-operator">=</span> JwsHeader.with(SignatureAlgorithm.RS256).build();
+        <span class="hljs-keyword">return</span> encoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
+    }
+}</code></pre><hr>
+<h2>11. Custom Token Claim Mapping</h2>
+<p>One of the most common real-world requirements is extracting roles, groups, or other custom data from your JWT and making them available as Spring Security authorities (for use in <code>hasRole()</code>, <code>hasAuthority()</code>, <code>@PreAuthorize</code>, etc.).</p>
+<h3>Extracting Roles from a Nested Claim (like Keycloak)</h3>
+<p>Keycloak, for example, puts roles in a nested structure like:</p>
+<pre><code class="hljs json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"realm_access"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"roles"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"admin"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"user"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"manager"</span><span class="hljs-punctuation">]</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre><p>Here's how to extract those and make them work with Spring Security:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Bean</span>
+<span class="hljs-keyword">public</span> JwtAuthenticationConverter <span class="hljs-title function_">jwtAuthenticationConverter</span><span class="hljs-params">()</span> {
+    <span class="hljs-comment">// A custom converter that knows how to extract Keycloak's nested roles</span>
+    <span class="hljs-type">JwtAuthenticationConverter</span> <span class="hljs-variable">converter</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">JwtAuthenticationConverter</span>();
+    converter.setJwtGrantedAuthoritiesConverter(keycloakRolesConverter());
+    <span class="hljs-keyword">return</span> converter;
+}
+
+<span class="hljs-keyword">private</span> Converter&lt;Jwt, Collection&lt;GrantedAuthority&gt;&gt; <span class="hljs-title function_">keycloakRolesConverter</span><span class="hljs-params">()</span> {
+    <span class="hljs-keyword">return</span> jwt -&gt; {
+        <span class="hljs-comment">// Extract realm_access.roles from the JWT claims</span>
+        Map&lt;String, Object&gt; realmAccess =
+                jwt.getClaimAsMap(<span class="hljs-string">"realm_access"</span>);
+
+        <span class="hljs-keyword">if</span> (realmAccess == <span class="hljs-literal">null</span> || !realmAccess.containsKey(<span class="hljs-string">"roles"</span>)) {
+            <span class="hljs-keyword">return</span> Collections.emptyList();
+        }
+
+        <span class="hljs-meta">@SuppressWarnings("unchecked")</span>
+        List&lt;String&gt; roles = (List&lt;String&gt;) realmAccess.get(<span class="hljs-string">"roles"</span>);
+
+        <span class="hljs-comment">// Map each role string to a GrantedAuthority with "ROLE_" prefix</span>
+        <span class="hljs-keyword">return</span> roles.stream()
+                .map(role -&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleGrantedAuthority</span>(<span class="hljs-string">"ROLE_"</span> + role.toUpperCase()))
+                .collect(Collectors.toList());
+    };
+}</code></pre><p>Then wire it in:</p>
+<pre><code class="hljs java">.oauth2ResourceServer(oauth2 -&gt; oauth2
+    .jwt(jwt -&gt; jwt
+        .jwtAuthenticationConverter(jwtAuthenticationConverter())
+    )
+)</code></pre><p>Now you can protect endpoints with:</p>
+<pre><code class="hljs java">.requestMatchers(<span class="hljs-string">"/admin/**"</span>).hasRole(<span class="hljs-string">"ADMIN"</span>)
+<span class="hljs-comment">// or</span>
+<span class="hljs-meta">@PreAuthorize("hasRole('MANAGER')")</span></code></pre><hr>
+<h2>12. Method-Level Security with OAuth2 Scopes</h2>
+<p>Method security allows you to place security checks directly on your service or controller methods using annotations. This works beautifully with OAuth2 scopes.</p>
+<pre><code class="hljs java"><span class="hljs-comment">// Enable method security in your configuration class</span>
+<span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableMethodSecurity</span> <span class="hljs-comment">// This annotation enables @PreAuthorize, @PostAuthorize, etc.</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecurityConfig</span> {
+    <span class="hljs-comment">// ...</span>
+}</code></pre><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@RequestMapping("/api/messages")</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MessageController</span> {
+
+    <span class="hljs-comment">// Only callers with "SCOPE_message.read" authority can call this</span>
+    <span class="hljs-meta">@GetMapping</span>
+    <span class="hljs-meta">@PreAuthorize("hasAuthority('SCOPE_message.read')")</span>
+    <span class="hljs-keyword">public</span> List&lt;Message&gt; <span class="hljs-title function_">getMessages</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> messageService.findAll();
+    }
+
+    <span class="hljs-comment">// Only callers with "SCOPE_message.write" can call this</span>
+    <span class="hljs-meta">@PostMapping</span>
+    <span class="hljs-meta">@PreAuthorize("hasAuthority('SCOPE_message.write')")</span>
+    <span class="hljs-keyword">public</span> Message <span class="hljs-title function_">createMessage</span><span class="hljs-params">(<span class="hljs-meta">@RequestBody</span> MessageRequest request)</span> {
+        <span class="hljs-keyword">return</span> messageService.create(request);
+    }
+
+    <span class="hljs-comment">// Multiple conditions — needs BOTH scopes</span>
+    <span class="hljs-meta">@DeleteMapping("/{id}")</span>
+    <span class="hljs-meta">@PreAuthorize("hasAuthority('SCOPE_message.write') and hasAuthority('SCOPE_message.delete')")</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">deleteMessage</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id)</span> {
+        messageService.delete(id);
+    }
+
+    <span class="hljs-comment">// Access JWT claims directly in SpEL expressions</span>
+    <span class="hljs-meta">@GetMapping("/mine")</span>
+    <span class="hljs-meta">@PreAuthorize("isAuthenticated()")</span>
+    <span class="hljs-keyword">public</span> List&lt;Message&gt; <span class="hljs-title function_">getMyMessages</span><span class="hljs-params">(<span class="hljs-meta">@AuthenticationPrincipal</span> Jwt jwt)</span> {
+        <span class="hljs-type">String</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> jwt.getSubject();
+        <span class="hljs-keyword">return</span> messageService.findByUserId(userId);
+    }
+}</code></pre><hr>
+<h2>13. Testing OAuth2 in Spring Boot</h2>
+<p>Spring Security provides excellent test support so you don't need a running auth server during tests.</p>
+<h3>Testing Resource Server Endpoints</h3>
+<pre><code class="hljs java"><span class="hljs-meta">@SpringBootTest</span>
+<span class="hljs-meta">@AutoConfigureMockMvc</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MessageControllerTest</span> {
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> MockMvc mockMvc;
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">getMessages_withValidJwt_returns200</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception {
+        mockMvc.perform(
+            get(<span class="hljs-string">"/api/messages"</span>)
+                <span class="hljs-comment">// .with(jwt()) simulates a valid JWT — no real auth server needed</span>
+                .with(jwt()
+                    .jwt(token -&gt; token
+                        .subject(<span class="hljs-string">"user-123"</span>)           <span class="hljs-comment">// set the "sub" claim</span>
+                        .claim(<span class="hljs-string">"scope"</span>, <span class="hljs-string">"message.read"</span>) <span class="hljs-comment">// set scopes</span>
+                        .claim(<span class="hljs-string">"email"</span>, <span class="hljs-string">"user@example.com"</span>)
+                    )
+                )
+        )
+        .andExpect(status().isOk());
+    }
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">getMessages_withoutToken_returns401</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception {
+        mockMvc.perform(get(<span class="hljs-string">"/api/messages"</span>))
+               .andExpect(status().isUnauthorized());
+    }
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">deleteMessage_withoutDeleteScope_returns403</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception {
+        mockMvc.perform(
+            delete(<span class="hljs-string">"/api/messages/1"</span>)
+                .with(jwt().jwt(token -&gt; token
+                    .claim(<span class="hljs-string">"scope"</span>, <span class="hljs-string">"message.read"</span>) <span class="hljs-comment">// has read but not delete</span>
+                ))
+        )
+        .andExpect(status().isForbidden()); <span class="hljs-comment">// 403 because scope is missing</span>
+    }
+}</code></pre><p>The <code>jwt()</code> import is:</p>
+<pre><code class="hljs java"><span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;</code></pre><h3>Testing OAuth2 Login Endpoints</h3>
+<pre><code class="hljs java"><span class="hljs-meta">@Test</span>
+<span class="hljs-keyword">void</span> <span class="hljs-title function_">dashboard_withOAuth2Login_returns200</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception {
+    mockMvc.perform(
+        get(<span class="hljs-string">"/dashboard"</span>)
+            <span class="hljs-comment">// .with(oauth2Login()) simulates a completed OAuth2 login</span>
+            .with(oauth2Login()
+                .attributes(attrs -&gt; attrs
+                    .put(<span class="hljs-string">"name"</span>, <span class="hljs-string">"Test User"</span>)
+                    .put(<span class="hljs-string">"email"</span>, <span class="hljs-string">"test@example.com"</span>)
+                )
+                .authorities(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleGrantedAuthority</span>(<span class="hljs-string">"SCOPE_profile"</span>))
+            )
+    )
+    .andExpect(status().isOk());
+}</code></pre><hr>
+<h2>14. Complete Real-World Example — All Three Roles Together</h2>
+<p>Here is a realistic microservices setup with three separate Spring Boot apps demonstrating all roles.</p>
+<h3>App 1: Authorization Server (port 9000)</h3>
+<pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AuthServerApplication</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {
+        SpringApplication.run(AuthServerApplication.class, args);
+    }
+}</code></pre><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableWebSecurity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AuthServerSecurityConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-meta">@Order(1)</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">authServerChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+            .oidc(Customizer.withDefaults()); <span class="hljs-comment">// enable /userinfo endpoint</span>
+        http.exceptionHandling(e -&gt;
+            e.defaultAuthenticationEntryPointFor(
+                <span class="hljs-keyword">new</span> <span class="hljs-title class_">LoginUrlAuthenticationEntryPoint</span>(<span class="hljs-string">"/login"</span>),
+                <span class="hljs-keyword">new</span> <span class="hljs-title class_">MediaTypeRequestMatcher</span>(MediaType.TEXT_HTML)));
+        <span class="hljs-keyword">return</span> http.build();
+    }
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-meta">@Order(2)</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">loginChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+        http.authorizeHttpRequests(a -&gt; a.anyRequest().authenticated())
+            .formLogin(Customizer.withDefaults());
+        <span class="hljs-keyword">return</span> http.build();
+    }
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> RegisteredClientRepository <span class="hljs-title function_">clientRepository</span><span class="hljs-params">()</span> {
+        <span class="hljs-comment">// The web frontend client</span>
+        <span class="hljs-type">RegisteredClient</span> <span class="hljs-variable">webClient</span> <span class="hljs-operator">=</span> RegisteredClient.withId(<span class="hljs-string">"web-client-id"</span>)
+            .clientId(<span class="hljs-string">"web-app"</span>)
+            .clientSecret(<span class="hljs-string">"{bcrypt}"</span> + <span class="hljs-keyword">new</span> <span class="hljs-title class_">BCryptPasswordEncoder</span>().encode(<span class="hljs-string">"web-secret"</span>))
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            .redirectUri(<span class="hljs-string">"http://localhost:8080/login/oauth2/code/my-server"</span>)
+            .scope(OidcScopes.OPENID).scope(OidcScopes.PROFILE)
+            .scope(<span class="hljs-string">"api.read"</span>).scope(<span class="hljs-string">"api.write"</span>)
+            .clientSettings(ClientSettings.builder().requireAuthorizationConsent(<span class="hljs-literal">true</span>).build())
+            .build();
+
+        <span class="hljs-comment">// The backend service client (client credentials)</span>
+        <span class="hljs-type">RegisteredClient</span> <span class="hljs-variable">serviceClient</span> <span class="hljs-operator">=</span> RegisteredClient.withId(<span class="hljs-string">"service-client-id"</span>)
+            .clientId(<span class="hljs-string">"backend-service"</span>)
+            .clientSecret(<span class="hljs-string">"{bcrypt}"</span> + <span class="hljs-keyword">new</span> <span class="hljs-title class_">BCryptPasswordEncoder</span>().encode(<span class="hljs-string">"service-secret"</span>))
+            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            .scope(<span class="hljs-string">"api.read"</span>)
+            .build();
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InMemoryRegisteredClientRepository</span>(webClient, serviceClient);
+    }
+
+    <span class="hljs-meta">@Bean</span> <span class="hljs-keyword">public</span> JWKSource&lt;SecurityContext&gt; <span class="hljs-title function_">jwkSource</span><span class="hljs-params">()</span> { <span class="hljs-comment">/* ... key generation ... */</span> }
+    <span class="hljs-meta">@Bean</span> <span class="hljs-keyword">public</span> AuthorizationServerSettings <span class="hljs-title function_">settings</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">return</span> AuthorizationServerSettings.builder()
+            .issuer(<span class="hljs-string">"http://localhost:9000"</span>).build();
+    }
+
+    <span class="hljs-comment">// Simple in-memory user store for the auth server's login form</span>
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> UserDetailsService <span class="hljs-title function_">users</span><span class="hljs-params">()</span> {
+        <span class="hljs-type">UserDetails</span> <span class="hljs-variable">alice</span> <span class="hljs-operator">=</span> User.withDefaultPasswordEncoder()
+            .username(<span class="hljs-string">"alice"</span>).password(<span class="hljs-string">"password"</span>).roles(<span class="hljs-string">"USER"</span>).build();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InMemoryUserDetailsManager</span>(alice);
+    }
+}</code></pre><h3>App 2: Resource Server — Messages API (port 8090)</h3>
+<pre><code class="hljs yaml"><span class="hljs-comment"># application.yml</span>
+<span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8090</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">resourceserver:</span>
+        <span class="hljs-attr">jwt:</span>
+          <span class="hljs-attr">issuer-uri:</span> <span class="hljs-string">http://localhost:9000</span>  <span class="hljs-comment"># our auth server</span></code></pre><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableWebSecurity</span>
+<span class="hljs-meta">@EnableMethodSecurity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ResourceServerConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">chain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+        http
+            .authorizeHttpRequests(a -&gt; a
+                .requestMatchers(HttpMethod.GET, <span class="hljs-string">"/messages"</span>).hasAuthority(<span class="hljs-string">"SCOPE_api.read"</span>)
+                .requestMatchers(HttpMethod.POST, <span class="hljs-string">"/messages"</span>).hasAuthority(<span class="hljs-string">"SCOPE_api.write"</span>)
+                .anyRequest().authenticated()
+            )
+            .oauth2ResourceServer(oauth2 -&gt; oauth2.jwt(Customizer.withDefaults()));
+        <span class="hljs-keyword">return</span> http.build();
+    }
+}</code></pre><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@RequestMapping("/messages")</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MessageController</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> List&lt;String&gt; messages = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;(List.of(<span class="hljs-string">"Hello"</span>, <span class="hljs-string">"World"</span>));
+
+    <span class="hljs-meta">@GetMapping</span>
+    <span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">getAll</span><span class="hljs-params">(<span class="hljs-meta">@AuthenticationPrincipal</span> Jwt jwt)</span> {
+        System.out.println(<span class="hljs-string">"Accessed by: "</span> + jwt.getSubject());
+        <span class="hljs-keyword">return</span> messages;
+    }
+
+    <span class="hljs-meta">@PostMapping</span>
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">add</span><span class="hljs-params">(<span class="hljs-meta">@RequestBody</span> String message)</span> {
+        messages.add(message);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"Added: "</span> + message;
+    }
+}</code></pre><h3>App 3: Web Frontend — OAuth2 Client (port 8080)</h3>
+<pre><code class="hljs yaml"><span class="hljs-comment"># application.yml</span>
+<span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8080</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">security:</span>
+    <span class="hljs-attr">oauth2:</span>
+      <span class="hljs-attr">client:</span>
+        <span class="hljs-attr">registration:</span>
+          <span class="hljs-attr">my-server:</span>
+            <span class="hljs-attr">provider:</span> <span class="hljs-string">my-auth-server</span>
+            <span class="hljs-attr">client-id:</span> <span class="hljs-string">web-app</span>
+            <span class="hljs-attr">client-secret:</span> <span class="hljs-string">web-secret</span>
+            <span class="hljs-attr">authorization-grant-type:</span> <span class="hljs-string">authorization_code</span>
+            <span class="hljs-attr">redirect-uri:</span> <span class="hljs-string">http://localhost:8080/login/oauth2/code/my-server</span>
+            <span class="hljs-attr">scope:</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">openid</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">profile</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">api.read</span>
+              <span class="hljs-bullet">-</span> <span class="hljs-string">api.write</span>
+        <span class="hljs-attr">provider:</span>
+          <span class="hljs-attr">my-auth-server:</span>
+            <span class="hljs-attr">issuer-uri:</span> <span class="hljs-string">http://localhost:9000</span></code></pre><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-meta">@EnableWebSecurity</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ClientSecurityConfig</span> {
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">chain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+        http
+            .authorizeHttpRequests(a -&gt; a
+                .requestMatchers(<span class="hljs-string">"/"</span>, <span class="hljs-string">"/public/**"</span>).permitAll()
+                .anyRequest().authenticated()
+            )
+            .oauth2Login(Customizer.withDefaults())
+            .oauth2Client(Customizer.withDefaults());
+        <span class="hljs-keyword">return</span> http.build();
+    }
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-keyword">public</span> RestClient <span class="hljs-title function_">messagesClient</span><span class="hljs-params">(OAuth2AuthorizedClientManager manager)</span> {
+        <span class="hljs-type">OAuth2ClientHttpRequestInterceptor</span> <span class="hljs-variable">interceptor</span> <span class="hljs-operator">=</span>
+            <span class="hljs-keyword">new</span> <span class="hljs-title class_">OAuth2ClientHttpRequestInterceptor</span>(manager);
+        <span class="hljs-keyword">return</span> RestClient.builder()
+            .baseUrl(<span class="hljs-string">"http://localhost:8090"</span>)
+            .requestInterceptor(interceptor)
+            .build();
+    }
+}</code></pre><pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FrontendController</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> RestClient messagesClient;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">FrontendController</span><span class="hljs-params">(RestClient messagesClient)</span> {
+        <span class="hljs-built_in">this</span>.messagesClient = messagesClient;
+    }
+
+    <span class="hljs-meta">@GetMapping("/dashboard")</span>
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">dashboard</span><span class="hljs-params">(Model model, <span class="hljs-meta">@AuthenticationPrincipal</span> OidcUser user)</span> {
+        <span class="hljs-comment">// Fetch messages from the Resource Server — token is attached automatically</span>
+        List&lt;String&gt; messages = messagesClient.get()
+            .uri(<span class="hljs-string">"/messages"</span>)
+            .attributes(clientRegistrationId(<span class="hljs-string">"my-server"</span>))
+            .retrieve()
+            .body(List.class);
+
+        model.addAttribute(<span class="hljs-string">"user"</span>, user.getFullName());
+        model.addAttribute(<span class="hljs-string">"messages"</span>, messages);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"dashboard"</span>; <span class="hljs-comment">// Thymeleaf template</span>
+    }
+}</code></pre><hr>
+<h2>15. Common Mistakes and How to Avoid Them</h2>
+<p><strong>Mistake 1: Exposing <code>client-secret</code> directly in <code>application.yml</code> in source control.</strong> Always use environment variables or a secrets manager:</p>
+<pre><code class="hljs yaml"><span class="hljs-comment"># WRONG</span>
+<span class="hljs-attr">client-secret:</span> <span class="hljs-string">my-actual-secret</span>
+
+<span class="hljs-comment"># CORRECT — reads from environment variable OAUTH2_CLIENT_SECRET</span>
+<span class="hljs-attr">client-secret:</span> <span class="hljs-string">${OAUTH2_CLIENT_SECRET}</span></code></pre><p><strong>Mistake 2: Forgetting to add <code>issuer-uri</code> validation on the Resource Server.</strong> If you only specify <code>jwk-set-uri</code> without <code>issuer-uri</code>, Spring Security won't validate the <code>iss</code> (issuer) claim, leaving you vulnerable to token substitution attacks. Always configure both or use <code>issuer-uri</code> alone (which validates both).</p>
+<p><strong>Mistake 3: Using Implicit Grant for SPAs.</strong> The Implicit Grant is deprecated. Use Authorization Code + PKCE. Spring Security supports PKCE on the client side via <code>ClientRegistration</code> — it's enabled automatically when <code>client-secret</code> is not set and <code>client-authentication-method: none</code> is configured.</p>
+<p><strong>Mistake 4: Confusing SCOPE_ prefix with ROLE_ prefix.</strong> JWT scopes become <code>SCOPE_api.read</code> in Spring Security. Database roles become <code>ROLE_ADMIN</code>. These are different and non-interchangeable in <code>hasRole()</code> vs <code>hasAuthority()</code>:</p>
+<pre><code class="hljs java"><span class="hljs-comment">// Scope check (use hasAuthority, NOT hasRole)</span>
+.hasAuthority(<span class="hljs-string">"SCOPE_api.read"</span>)   <span class="hljs-comment">// CORRECT for JWT scopes</span>
+
+<span class="hljs-comment">// Role check (use hasRole — automatically adds ROLE_ prefix)</span>
+.hasRole(<span class="hljs-string">"ADMIN"</span>)   <span class="hljs-comment">// equivalent to hasAuthority("ROLE_ADMIN")</span></code></pre><p><strong>Mistake 5: Not handling token expiry in RestClient calls.</strong> The default <code>OAuth2AuthorizedClientManager</code> automatically refreshes expired tokens when a Refresh Token is available. However, if you construct your own <code>RestClient</code> without the interceptor, you'll need to handle this manually. Always use <code>OAuth2ClientHttpRequestInterceptor</code>.</p>
+<p><strong>Mistake 6: Redirect URI mismatch.</strong> The redirect URI in your <code>application.yml</code> must exactly match what you registered with your OAuth2 provider. Trailing slashes, HTTP vs HTTPS, and <code>localhost</code> vs <code>127.0.0.1</code> all cause mismatches.</p>
+<p><strong>Mistake 7: Missing <code>@EnableMethodSecurity</code> when using <code>@PreAuthorize</code>.</strong> Without this annotation on your <code>@Configuration</code> class, <code>@PreAuthorize</code> and <code>@PostAuthorize</code> do nothing silently.</p>
+<hr>
+<h2>16. Quick Reference Card</h2>
+<table>
+<thead>
+<tr>
+<th>What you want</th>
+<th>Configuration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>"Sign in with Google"</td>
+<td><code>oauth2Login()</code> + registration with <code>openid</code> scope</td>
+</tr>
+<tr>
+<td>Call a protected API for logged-in user</td>
+<td><code>oauth2Client()</code> + <code>RestClient</code> with <code>OAuth2ClientHttpRequestInterceptor</code></td>
+</tr>
+<tr>
+<td>Call an API as the application (no user)</td>
+<td><code>client_credentials</code> grant type</td>
+</tr>
+<tr>
+<td>Protect your REST API with JWT</td>
+<td><code>oauth2ResourceServer().jwt()</code> + <code>issuer-uri</code></td>
+</tr>
+<tr>
+<td>Protect your REST API with opaque tokens</td>
+<td><code>oauth2ResourceServer().opaqueToken()</code> + <code>introspection-uri</code></td>
+</tr>
+<tr>
+<td>Get user info in a controller</td>
+<td><code>@AuthenticationPrincipal OidcUser</code> or <code>@AuthenticationPrincipal Jwt</code></td>
+</tr>
+<tr>
+<td>Check scope on an endpoint</td>
+<td><code>.hasAuthority("SCOPE_my.scope")</code></td>
+</tr>
+<tr>
+<td>Check role on an endpoint</td>
+<td><code>.hasRole("ADMIN")</code> (adds ROLE_ prefix automatically)</td>
+</tr>
+<tr>
+<td>Protect a method</td>
+<td><code>@PreAuthorize("hasAuthority('SCOPE_...')")</code> + <code>@EnableMethodSecurity</code></td>
+</tr>
+<tr>
+<td>Map JWT claims to roles</td>
+<td>Custom <code>JwtAuthenticationConverter</code></td>
+</tr>
+<tr>
+<td>Extract Keycloak roles</td>
+<td>Custom converter reading <code>realm_access.roles</code> claim</td>
+</tr>
+<tr>
+<td>Test without auth server</td>
+<td><code>.with(jwt(...))</code> in MockMvc tests</td>
+</tr>
+<tr>
+<td>Run your own auth server</td>
+<td><code>spring-boot-starter-oauth2-authorization-server</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h3>The Mental Model That Ties Everything Together</h3>
+<p>Imagine three employees in an office building:</p>
+<p>The <strong>Authorization Server</strong> is the security desk at the building entrance. They check your identity (authentication), decide what floors you can visit (scopes), and issue you a visitor badge (access token).</p>
+<p>The <strong>Client</strong> is someone who needs to visit the building on your behalf — like a courier. You go to the security desk together, they verify you, you tell security "this courier can visit floors 3 and 5 for me" (consent + scopes), and the courier gets a badge.</p>
+<p>The <strong>Resource Server</strong> is the lock on each floor's door. When the courier arrives, they scan their badge. The lock verifies the badge is genuine (JWT signature check), checks it hasn't expired, and confirms it says they're allowed on this floor (scope check). If all passes, the door opens.</p>
+<p>Spring Security provides all the machinery for each of these roles — you just configure which role your application plays and provide the credentials (client ID, secret, issuer URI). The framework handles all the HTTP redirects, token exchange, signature verification, and session management automatically.</p>
+<hr>
+<p><em>Reference: Spring Security Documentation — OAuth2 (<a href="https://docs.spring.io/spring-security/reference/servlet/oauth2/index.html">https://docs.spring.io/spring-security/reference/servlet/oauth2/index.html</a>)</em><br><em>Version: Spring Security 7.0.x / Spring Boot 3.x</em></p>
+
+  </article>
+  <script>
+      window.addEventListener('load', function () {
+          if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+              window.MathJax.typesetPromise().catch(function (err) {
+                  console.warn('MathJax typeset failed:', err);
+              });
+          }
+          if (window.mermaid) {
+              try {
+                  window.mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+              } catch (e) {
+                  console.warn('Mermaid initialization failed:', e);
+              }
+          }
+      });
+  </script>
+</body>
+</html>
